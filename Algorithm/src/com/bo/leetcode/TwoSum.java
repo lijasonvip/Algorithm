@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class TwoSum {
 
+	//找两个数使得和为目标值
 	/**
 	 * @param nums
 	 * @param target

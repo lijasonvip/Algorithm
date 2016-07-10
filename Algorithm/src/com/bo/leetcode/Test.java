@@ -9,4 +9,14 @@ public class Test {
 		
 		System.out.println(string.substring(string.lastIndexOf("§")+2));
 	}
+	
+	/**
+	 * 
+	 */
+	public static void est(){
+		
+		int b = 1;
+		b = b + 1;
+		
+	}
 }
