@@ -1,5 +1,7 @@
 package com.bo.offer;
 
+import java.util.Arrays;
+
 //http://www.tuicool.com/articles/baYJ3a
 //http://www.acmerblog.com/max-sum-rectangle-in-a-matrix-5955.html
 public class MaxProblem {
@@ -60,6 +62,44 @@ public class MaxProblem {
 			}
 		}
 		return Math.max(maxleftsum > maxrightsum ? maxleftsum : maxrightsum, maxleftbordersum+maxrightbordersum);
+	}
+	
+	
+	/**
+	 * 最大连续子数组 子矩阵
+	 */
+	public static int[][] arrSum(int[][] arr){
+		int m = arr.length;
+		int n = arr[0].length;
+		int[][] p = new int[m+1][n+1];
+		Arrays.fill(arr, 0);
+		
+		for (int i = 1; i <= m; i++) {
+			for (int j = 1; j <= n; j++) {
+				p[i][j] = p[i-1][j] + p[i][j-1] + arr[i-1][j-1] - p[i-1][j-1];
+			}
+		}
+		return p;
+	}
+	
+	public static int maxArrSum(int[][] arr){
+		int m = arr.length;
+		int n = arr[0].length;
+		int p[][] = arrSum(arr);
+		int ans = Integer.MIN_VALUE;
+		for (int i = 1; i <= m; i++) {
+			for (int j = 1; j <= n; j++) {
+				for(int endi=i;endi<=m;endi++){
+					for(int endj=j;endj<=n;endj++){
+						//大方框减去小方框
+						int sum = p[endi][endj] - p[i-1][endj] - p[endi][j-1] + p[i-1][j-1];
+						if(ans < sum)
+							ans = sum;
+					}
+				}
+			}
+		}
+		return ans;
 	}
 	
 	//============================================================================
