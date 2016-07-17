@@ -30,6 +30,7 @@ public class ReverseBetween {
         ListNode pre = null;
         ListNode next = last.next;
         ListNode tmpNext = null;
+        
         while (cnt <= n){
             tmpNext = next.next;
             next.next = pre;

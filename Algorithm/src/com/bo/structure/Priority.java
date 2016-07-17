@@ -2,6 +2,7 @@ package com.bo.structure;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -48,6 +49,13 @@ public class Priority {
 		}
 		PriorityQueue<Character> pc = new PriorityQueue<Character>(set);
 		Print3(pc);
+		
+		int[] arr = {1,3, 5, 6 ,2, 5, 7};
+		PriorityQueue<int[]> comp = new PriorityQueue<>(3, new Comparator<int[]>() {
+			public int compare(int[] a, int[] b){
+				return 0;
+			}
+		});
 		
 	}
 	
