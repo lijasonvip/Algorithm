@@ -83,6 +83,24 @@ public class GuessGame {
 		return res;
 	}
 	
+	 /**
+	 * 自底向上 bottom up
+	 */
+	public static int getMoneyAmount2(int n) {
+	        int[][] table = new int[n+1][n+1];
+	        for(int j=2; j<=n; j++){
+	            for(int i=j-1; i>0; i--){
+	                int globalMin = Integer.MAX_VALUE;
+	                for(int k=i; k<=j; k++){
+	                    int localMax = k + Math.max(table[i][k==i?k:k-1], table[k==j?k:k+1][j]);
+	                    globalMin = Math.min(globalMin, localMax);
+	                }
+	                table[i][j] = globalMin;
+	            }
+	        }
+	        return table[1][n];
+	    }
+	
 	public static int GuessNumber2(int n){
 		int low = 1;
 		int high = n;

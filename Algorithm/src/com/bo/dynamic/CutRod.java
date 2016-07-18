@@ -5,7 +5,7 @@ public class CutRod {
 	public static void main(String... args){
 		int[] p = {0,1,5,8,9,10,17,17,20,24,30};
 		//int cut = CutRod(p,2);
-		//int cut = Bottom_Up_Cut_Rod(p, 10);
+//		int cut = Bottom_Up_Cut_Rod(p, 10);
 		//System.out.println(cut);
 		int[][] cut = Extend_Bottom_Up_Cut_Rod(p, 10);
 		for(int i=0;i<cut.length;i++){
