@@ -40,7 +40,7 @@ public class Sort {
 	 * @param data
 	 */
 	public static void BubbleSort(int[] data) {
-		boolean isswap = false;
+		boolean isswap;
 		// i index control n-1 rounds not the data index
 		for (int i = 1; i < data.length; i++) {
 			isswap = false;
