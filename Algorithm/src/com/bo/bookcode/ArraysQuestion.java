@@ -3,6 +3,7 @@ package com.bo.bookcode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -228,7 +229,7 @@ public class ArraysQuestion {
 	
 	//删除数组中值为某数的所有元素 返回新数组的长度 保证稳定
 	
-	public static int removeElement(int[] arr, int target){
+	public static int removeElement(int[] arr, int target){;
 		int index = 0;
 		for(int i=0;i<arr.length;i++){
 			if (arr[i] != target) {
@@ -238,10 +239,79 @@ public class ArraysQuestion {
 		return index;
 	}
 	
+	//排列的下一个排列
+	
+	public static void nextPermutation(int[] arr){
+		int index = arr.length-1;
+		while(arr[index] < arr[index-1])
+			index --;
+		if (index == 0) {
+			//倒数到第一个了已经是最大排列 排序返回
+			Arrays.sort(arr);
+			return ;
+		}
+		
+		int second = Integer.MAX_VALUE, secondIndex = Integer.MAX_VALUE;
+		for(int i=arr.length-1;i>=index-1;--i){
+			if (arr[i] > arr[index-1]) {
+				if (arr[i] < second) {
+					second = arr[i];
+					secondIndex = i;
+				}
+			}
+		}
+		
+		int temp = arr[index -1 ];
+		arr[index-1] = arr[secondIndex];
+		arr[secondIndex] = temp;
+		
+		Arrays.sort(Arrays.copyOfRange(arr, index, arr.length));
+	}
+	
+	//1-n N个数 给出第k个排列序列
+	//http://www.tuicool.com/articles/eMni6fV
+	public static String getPermutation(int n, int k){
+		int[] pow = new int[n];
+		pow[0] = 1;
+		//预算阶乘
+		for(int i=1; i < n; i++){
+			pow[i] = pow[i-1] * (i+1);
+		}
+		
+		List<Integer> list = new LinkedList<>();
+		for(int i=1;i<=n;i++){
+			list.add(i);
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		int pos = n - 1;
+		k -= 1;
+		while(pos > 0){
+			int index = k / pow[pos-1];
+			sb.append(list.get(index));
+			list.remove(index);
+			k = k % pow[pos];
+			--pos;
+		}
+		
+		sb.append(list.get(0));
+		return sb.toString();
+	}
+	
+	//判断数独盘是否合法
+	
+	public static boolean isValidSodoku(int[][] board){
+		return false;
+	}
+	
+	//下雨后能存下多少水
+	
 	
 	
 	public static void main(String[] args) {
-		int[] arr = { 1, 1, 1, 2, 2, 3 };
-		System.out.println(RemoveDuplicateMoreThanTwice(arr));
+		int[] arr = {6,5,4,8,7,5,1};
+		nextPermutation(arr);
+		
+		System.out.println(getPermutation(3, 2));
 	}
 }
