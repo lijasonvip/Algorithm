@@ -306,12 +306,60 @@ public class ArraysQuestion {
 	
 	//下雨后能存下多少水
 	
+	/**
+	 * 第一种思路
+	 * 从左往右扫描一遍 对每个柱子 求左边最大值
+	 * 从右往左扫描一遍 对每个柱子 求最大右值
+	 * 再扫描一遍 求每个珠子的面积 并累加
+	 */
+	public static int trapWater(int[] arr){
+		int low = 0, high = arr.length-1;
+		int rain = 0;
+		int shortBar = 0;
+		while(low < high){
+			if (arr[low] <= shortBar) {
+				rain += shortBar - arr[low];
+				low ++;
+			}else if (arr[high] <= shortBar) {
+				rain += shortBar - arr[high];
+				high--;
+			}else {
+				shortBar = Math.min(arr[low], arr[high]);
+			}
+		}
+		return rain;
+	}
+	
+	
+	/**
+	 * 第二种思路
+	 * 扫描一遍 找到最高的柱子 这个柱子将数组分为两半
+	 * 处理左边一半
+	 * 处理右边一半
+	 */
+	public static int trapWater2(int[] arr){
+		int max = 0; //最高柱子的下标
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] > max) {
+				max = i;
+			}
+		}
+		int water = 0;
+		for (int i = 0, peak = 0; i < arr.length; i++) {
+			if (arr[i] > peak) {
+				peak = arr[i];
+			}else{
+				water += peak - arr[i];
+			}
+		}
+		
+		
+	}
 	
 	
 	public static void main(String[] args) {
-		int[] arr = {6,5,4,8,7,5,1};
-		nextPermutation(arr);
+		int[] arr = {0,1,0,2,1,0,1,3,2,1,2,1};
+		System.out.println(trapWater(arr));
 		
-		System.out.println(getPermutation(3, 2));
 	}
 }
