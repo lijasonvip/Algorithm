@@ -96,7 +96,8 @@ public class ListQuestion {
 	public static void main(String[] args) {
 		// testRecerse();
 		// testPartition();
-		testRemove();
+//		testRemove();
+		testR();
 	}
 
 	// 链表中删除重复 链表已经有序
@@ -223,7 +224,70 @@ public class ListQuestion {
 	// 判断有没有环 两个快慢指针
 	
 	// 找环的入口  除了快慢指针外再设第三个慢指针 
+	public static ListNode detectCycle(ListNode head){
+		ListNode slow = head, fast = head;
+		while(fast != null && fast.next != null){
+			slow = slow.next;
+			fast = fast.next.next;
+			if (slow ==fast) {
+				ListNode slow2 = head;
+				while(slow2 != slow){
+					slow = slow.next;
+					slow2 = slow2.next;
+				}
+				return slow2;
+			}
+		}
+		return null;
+	}
 	
+	//重排链表 类似洗牌
+	public static void reorderList(ListNode head){
+		if (head == null || head.next == null) {
+			return;
+		}
+		
+		ListNode slow = head, fast = head, prev = null;
+		//从中间断开
+		while(fast != null && fast.next != null){
+			prev = slow;
+			slow = slow.next;
+			fast = fast.next.next;
+		}
+		prev.next = null; //cut
+		slow = reverse(slow);
+		//merge two list
+		ListNode cur = head;
+		while(cur.next != null){
+			ListNode temp = cur.next;
+			cur.next = slow;
+			slow = slow.next;
+			cur.next.next =temp;
+			cur = temp;
+		}
+		cur.next = slow;
+	}
+	
+	public static ListNode reverse(ListNode head){
+		if (head == null || head.next == null) {
+			return head;
+		}
+		
+		ListNode dummy = new ListNode(-1);
+		dummy.next = head;
+		ListNode pre = dummy, cur = head, curnext = head.next;
+		while(curnext != null){
+			pre.next = curnext;
+			cur.next = curnext.next;
+			curnext = cur.next;
+		}
+		return dummy.next;
+	}
+	
+	public static void testR(){
+		ListNode head = construct(new int[]{1,2,3,4,5});
+		printList(reverse(head));
+	}
 	
 	public static void testRemove() {
 		ListNode head = construct(new int[] { 1, 1, 2, 3, 3 });
