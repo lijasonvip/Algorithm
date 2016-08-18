@@ -1,6 +1,8 @@
 package com.bo.bookcode;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class ListQuestion {
 
@@ -275,14 +277,22 @@ public class ListQuestion {
 		
 		ListNode dummy = new ListNode(-1);
 		dummy.next = head;
-		ListNode pre = dummy, cur = head, curnext = head.next;
+		ListNode pre = dummy, cur = head, curnext = head.next, prenext = pre.next;
 		while(curnext != null){
+			//pre.next 先记下
+			
 			pre.next = curnext;
 			cur.next = curnext.next;
+			curnext.next = prenext;
+			prenext = curnext;
 			curnext = cur.next;
+			
 		}
 		return dummy.next;
 	}
+	
+	
+	
 	
 	public static void testR(){
 		ListNode head = construct(new int[]{1,2,3,4,5});
@@ -310,6 +320,33 @@ public class ListQuestion {
 			cur = cur.next;
 		}
 		return dummy.next;
+	}
+}
+
+class LRUCache{
+	class CacheNode{
+		int key;
+		int value;
+		public CacheNode(int key, int value){
+			this.key = key;
+			this.value = value;
+		}
+	}
+	
+	int capability;
+	Map<Integer, LinkedList<CacheNode>> cachemap;
+	LinkedList<CacheNode> cachelist;
+	
+	public LRUCache(int cap){
+		this.capability = cap;
+	}
+	
+	public int get(int key){
+		return 0;
+	}
+	
+	public void set(int key, int value){
+		
 	}
 }
 
