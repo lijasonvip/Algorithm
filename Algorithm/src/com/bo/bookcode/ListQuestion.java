@@ -1,10 +1,6 @@
 package com.bo.bookcode;
 
-import java.util.Currency;
 import java.util.List;
-import java.util.concurrent.BlockingDeque;
-
-import com.bo.designpattern.Test;
 
 public class ListQuestion {
 
@@ -100,7 +96,7 @@ public class ListQuestion {
 	public static void main(String[] args) {
 		// testRecerse();
 		// testPartition();
-		restRemove();
+		testRemove();
 	}
 
 	// 链表中删除重复 链表已经有序
@@ -115,18 +111,121 @@ public class ListQuestion {
 			pre = pre.next;
 			if (pre != null) {
 				cur = pre.next;
-			}else
+			} else
 				break;
-			
+
 		}
 		return head;
 	}
-	
-	public static ListNode removeAllDup(ListNode head){
+
+	public static ListNode removeAllDup(ListNode head) {
 		return null;
 	}
 
-	public static void restRemove() {
+	// 旋转链表
+	// 1-2-3-4-5-null k=2, 先找长度len 尾部5指向头 从前往后走len-k断开即可
+	public static ListNode rotateRight(ListNode head, int k) {
+		if (head == null || k == 0) {
+			return head;
+		}
+		int len = 1;
+		ListNode p = head;
+		while (p.next != null) {
+			len++;
+			p = p.next;
+		}
+
+		k = len - k % len;
+		p.next = head;
+		for (int step = 0; step < k; step++) {
+			p = p.next;
+		}
+		head = p.next;
+		p.next = null;
+		return head;
+	}
+
+	// 删除倒数第N个节点 快慢指针
+
+	// 链表中成对交换数据
+	public static ListNode swapPairs(ListNode head) {
+		if (head == null || head.next == null) {
+			return head;
+		}
+		ListNode dummy = new ListNode(-1);
+		dummy.next = head;
+		for (ListNode prev = dummy, cur = prev.next, curnext = cur.next; curnext != null;) {
+			prev.next = curnext;
+			cur.next = curnext.next;
+			curnext.next = cur;
+			prev = cur;
+			cur = cur.next;
+			curnext = cur != null ? cur.next : null;
+		}
+		return dummy.next;
+	}
+
+	// 链表分组翻转
+	public static ListNode reverseKGroup(ListNode head, int k) {
+		if (head == null || head.next == null || k < 2) {
+			return head;
+		}
+
+		ListNode nextgroup = head;
+		for (int i = 0; i < k; i++) {
+			if (nextgroup != null) {
+				nextgroup = nextgroup.next;
+			} else
+				return head;
+		}
+
+		// nextgroup 是下一组的头
+		// newnextgroup 是翻转后的组的头
+		ListNode newnextgroup = reverseKGroup(nextgroup, k);
+		ListNode prev = null, cur = head;
+		while (cur != nextgroup) {
+			ListNode next = cur.next;
+			cur.next = prev != null ? prev : newnextgroup;
+			prev = cur;
+			cur = next;
+		}
+		return prev;
+
+	}
+
+	public static ListNode reverseKGroup2(ListNode head, int k) {
+		if (head == null || head.next == null || k < 2)
+			return head;
+		ListNode dummy = new ListNode(-1);
+		dummy.next = head;
+		for (ListNode prev = dummy, end = head; end != null; end = prev.next) {
+			for (int i = 1; i < k && end != null; i++)
+				end = end.next;
+			if (end == null)
+				break;
+			prev = reverse(prev, prev.next, end);
+		}
+		return dummy.next;
+	}
+
+	public static ListNode reverse(ListNode prev, ListNode begin, ListNode end) {
+		ListNode end_next = end.next;
+		for (ListNode p = begin, cur = p.next, next = cur.next; cur != end_next; p = cur, cur = next, next = next != null
+				? next.next : null) {
+			cur.next = p;
+		}
+		begin.next = end_next;
+		prev.next = end;
+		return begin;
+	}
+
+	
+	// 判断有没有环 两个快慢指针
+	
+	// 找环的入口  除了快慢指针外再设第三个慢指针 
+	
+	
+	public static void testRemove() {
 		ListNode head = construct(new int[] { 1, 1, 2, 3, 3 });
 		printList(removeDuplicate(head));
 	}
