@@ -8,7 +8,10 @@ public class StringQuestions {
 		s = s.toLowerCase();
 		int i = 0, j = s.length();
 		while(i<j){
-			
+			if () {
+				
+				
+			}
 		}
 	}
 
