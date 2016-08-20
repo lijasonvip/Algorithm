@@ -22,6 +22,7 @@ public class RoadLight {
 				max = a[i] - a[i-1];
 			}
 		}
+		max = max / 2;
 		
 		if (a[0] != 0) {
 			max = Math.max(max, a[0]);
