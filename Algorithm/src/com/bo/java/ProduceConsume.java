@@ -1,6 +1,7 @@
 package com.bo.java;
 
 import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.text.html.CSS;
 
@@ -192,4 +193,54 @@ class Storage {
 	public int getMax_Size() {
 		return MAX_SIZE;
 	}
+}
+
+class BlockingStorage{
+	private final int MAX_SIZE = 100;
+	private LinkedBlockingQueue<Object> list = new LinkedBlockingQueue<>();
+	
+	public void produce(int num){
+		if (list.size() == MAX_SIZE) {
+			System.out.println("库满了：" + MAX_SIZE + "\t暂时不能执行生产任务");
+		}
+		
+		//produce
+		for (int i = 0; i < num; i++) {
+			try {
+				list.put(new Object());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("现在的库容量" + list.size());
+	}
+	
+	public void consume(int num){
+		if (list.size() == 0) {
+			System.out.println("库容量为0\t不能执行任务");
+		}
+		
+		for (int i = 0; i < num; i++) {
+			try {
+				list.take();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("现库容量：" + list.size());
+	}
+
+	public LinkedBlockingQueue<Object> getList() {
+		return list;
+	}
+
+	public void setList(LinkedBlockingQueue<Object> list) {
+		this.list = list;
+	}
+
+	public int getMAX_SIZE() {
+		return MAX_SIZE;
+	}
+	
+	
 }
