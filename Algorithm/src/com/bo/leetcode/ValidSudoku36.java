@@ -24,7 +24,7 @@ public class ValidSudoku36 {
 					continue;
 				}
 				else if (ch >= '1' && ch <= '9') {
-					int num = ch -'0' - 1;  //因为下标是从0开始的-1
+					int num = ch -'0' - 1;  //因为下标是从0开始的要-1
 					if (row[r][num]) {
 						return false;
 					}

@@ -87,7 +87,8 @@ public class FindKthBigFromTwoSortedArray {
 	
 	
 	/**
-	 * 找两个排序数组中的中位数 
+	 * 找两个排序数组中的中位数  下中位数
+	 * 对偶数求两个的情况可分别求上和下中位数求均值
 	 */
 	public static int FindMedian(int[] A, int aBeg, int aEnd, int[] B){
 		//合并后大数组的中位数下标
