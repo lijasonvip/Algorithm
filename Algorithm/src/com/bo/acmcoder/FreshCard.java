@@ -12,6 +12,8 @@ public class FreshCard {
 			int[] cards = new int[2*n];
 			int k = scanner.nextInt();
 			for (int j = 0; j < cards.length; j++) {
+				//竟然把这里的j写成了i 最后数组都没获取到正确的数据 debug才发现
+				//我是不是傻
 				cards[j] = scanner.nextInt();
 			}
 			
