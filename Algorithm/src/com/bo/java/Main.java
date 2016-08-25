@@ -33,6 +33,7 @@ public class Main {
 			max --;
 		}
 		System.out.println(max);
+		return tol;
 		
 	}
 
