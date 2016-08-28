@@ -39,24 +39,25 @@ public class SerializeBinaryTree {
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
-		TreeNode root = new TreeNode(30);
-		root.left = new TreeNode(20);
-		root.left.left = new TreeNode(10);
-		root.right = new TreeNode(40);
-		root.right.left = new TreeNode(35);
-		root.right.right = new TreeNode(50);
-		PrintStream ps = new PrintStream(new File("E://serialize.txt"));
-		serialize(root, ps);
-
-		Scanner cin = new Scanner(new File("E://serialize.txt"));
-		TreeNode back = deserialize(cin);
-
-		System.out.println(back.val);
-
+		TreeNode root = new TreeNode(1);
+		root.left = new TreeNode(2);
+		root.right = new TreeNode(3);
+		root.right.left = new TreeNode(4);
+		root.right.right = new TreeNode(5);
+//		PrintStream ps = new PrintStream(new File("E://serialize.txt"));
+//		serialize(root, ps);
+//
+//		Scanner cin = new Scanner(new File("E://serialize.txt"));
+//		TreeNode back = deserialize(cin);
+//		System.out.println(serialize3(root));
+//		System.out.println(mydeserialize(myserialize(root)).val);
+		String string = serialize(root);
+		deserialize(string);
+		
 	}
 
 	// 迭代DFS
-	public String serialize(TreeNode root) {
+	public static String serialize(TreeNode root) {
 		StringBuilder sb = new StringBuilder();
 		TreeNode x = root;
 		Deque<TreeNode> stack = new LinkedList<>();
@@ -76,7 +77,7 @@ public class SerializeBinaryTree {
 	}
 
 	// Decodes your encoded data to tree.
-	public TreeNode deserialize(String data) {
+	public static TreeNode deserialize(String data) {
 		if (data.length() == 0)
 			return null;
 		String[] node = data.split(" ");
@@ -108,13 +109,13 @@ public class SerializeBinaryTree {
 
 	// 递归DFS
 	// Encodes a tree to a single string.
-	public String serialize2(TreeNode root) {
+	public static String serialize2(TreeNode root) {
 		StringBuilder sb = new StringBuilder();
 		dfs(root, sb);
 		return sb.toString();
 	}
 
-	private void dfs(TreeNode x, StringBuilder sb) {
+	private static void dfs(TreeNode x, StringBuilder sb) {
 		if (x == null) {
 			sb.append("null ");
 			return;
@@ -126,13 +127,13 @@ public class SerializeBinaryTree {
 	}
 
 	// Decodes your encoded data to tree.
-	public TreeNode deserialize2(String data) {
+	public static TreeNode deserialize2(String data) {
 		String[] node = data.split(" ");
 		int[] d = new int[1];
 		return dfs(node, d);
 	}
 
-	private TreeNode dfs(String[] node, int[] d) {
+	private static TreeNode dfs(String[] node, int[] d) {
 		if (node[d[0]].equals("null")) {
 			d[0]++;
 			return null;
@@ -146,7 +147,7 @@ public class SerializeBinaryTree {
 
 	// BFS
 	// Encodes a tree to a single string.
-	public String serialize3(TreeNode root) {
+	public static String serialize3(TreeNode root) {
 		if (root == null)
 			return "";
 		Queue<TreeNode> qu = new LinkedList<>();
@@ -175,7 +176,7 @@ public class SerializeBinaryTree {
 	}
 
 	// Decodes your encoded data to tree.
-	public TreeNode deserialize3(String data) {
+	public static TreeNode deserialize3(String data) {
 		if (data.length() == 0)
 			return null;
 		String[] node = data.split(" ");
@@ -207,6 +208,66 @@ public class SerializeBinaryTree {
 		return root;
 	}
 
+	public static String myserialize(TreeNode root){
+		if (root == null) {
+			return "#";
+		}
+		Queue<TreeNode> queue = new LinkedList<>();
+		StringBuilder sBuilder = new StringBuilder();
+		queue.offer(root);
+		sBuilder.append(root.val + " ");
+		while(!queue.isEmpty()){
+			TreeNode q = queue.poll();
+			if (q.left != null) {
+				queue.offer(q.left);
+				sBuilder.append(q.left.val+" ");
+			}else{
+				sBuilder.append("# ");
+			}
+			
+			if (q.right != null) {
+				queue.offer(q.right);
+				sBuilder.append(q.right.val+" ");
+			}else {
+				sBuilder.append("# ");
+			}
+		}
+		return sBuilder.deleteCharAt(sBuilder.length()-1).toString();
+	}
+	
+	public static TreeNode mydeserialize(String str){
+		if (str == "#" || str.equals("#")) {
+			return null;
+		}
+		String[] nodes = str.split(" ");
+		TreeNode root = new TreeNode(Integer.parseInt(nodes[0]));
+		Queue<TreeNode> queue = new LinkedList<>();
+		queue.offer(root);
+		int i = 1;
+		while(!queue.isEmpty()){
+			Queue<TreeNode> next = new LinkedList<>();
+			while(!queue.isEmpty()){
+				TreeNode x = queue.poll();
+				if (nodes[i] == "#" || nodes[i].equals("#")) {
+					x.left = null;
+				}else{
+					x.left = new TreeNode(Integer.parseInt(nodes[i]));
+					next.offer(x.left);
+				}
+				i++;
+				if (nodes[i] == "#" || nodes[i].equals("#")) {
+					x.right = null;
+				}else{
+					x.right = new TreeNode(Integer.parseInt(nodes[i]));
+					next.offer(x.right);
+				}
+				i++;
+			}
+			queue = next;
+		}
+		return root;
+	}
+	
 }
 
 class TreeNode {
@@ -216,5 +277,9 @@ class TreeNode {
 
 	public TreeNode(int val) {
 		this.val = val;
+	}
+	
+	public String toString(){
+		return String.valueOf(this.val);
 	}
 }

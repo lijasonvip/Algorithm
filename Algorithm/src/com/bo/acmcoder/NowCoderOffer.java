@@ -6,6 +6,8 @@ public class NowCoderOffer {
 
 	// 牛客网的剑指offer
  
+	
+	
 	//统计二进制数中1的个数
 	//http://www.360doc.com/content/15/1108/16/1317564_511672961.shtml
 	int CountOne(int n){
