@@ -5,6 +5,8 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Stack;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
+
 public class NowCoderOffer {
 
 	// 牛客网的剑指offer
@@ -19,6 +21,7 @@ public class NowCoderOffer {
 	public static ListNode ReverseList(ListNode head){
 		ListNode dummy = new ListNode(-1);
 		dummy.next = head;
+		
 	}
 	
 	//链表倒数第k个节点
