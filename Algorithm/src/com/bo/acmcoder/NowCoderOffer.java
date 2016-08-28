@@ -1,35 +1,104 @@
 package com.bo.acmcoder;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 import java.util.Stack;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
 public class NowCoderOffer {
 
 	// 牛客网的剑指offer
 
 	public static void main(String[] args) {
-		int[] data = { 1, 2, 3, 4, 5};
-		ListNode head = construct(data);
-		ListNode tail = ReverseList(head);
-		while(tail != null){
-			System.out.print(tail.val + " ");
-			tail = tail.next;
+		int[] data = { 1, 3, 5, 7, 9};
+		int[] data2 = {2, 4, 6, 8, 10};
+		ListNode head = Merge(construct(data), construct(data2));
+		while(head != null){
+			System.out.print(head.val + " ");
+			head = head.next;
 		}
 	}
 	
-	//合并排序链表
-	public static ListNode Merge(ListNode list1, ListNode lisit2){
-		if (list1 == null) {
-			return lisit2;
+	
+	//镜像二叉树 
+	//递归
+	public void Mirror(TreeNode root){
+		if (root == null) {
+			return;
 		}
-		if (lisit2 == null) {
+		if (root.left == null && root.right == null) {
+			return;
+		}
+		TreeNode temp = root.left;
+		root.left = root.right;
+		root.right = temp;
+		if (root.left != null) {
+			Mirror(root.left);
+		}
+		if (root.right != null) {
+			Mirror(root.right);
+		}
+	}
+	
+	//迭代
+	public static void Mirror_Iteration(TreeNode root){
+		if (root == null) {
+			return;
+		}
+		Stack<TreeNode> stack = new Stack<>();
+		stack.push(root);
+		
+	}
+	
+	//树的子结构 判断B是不是A的子树
+	public static boolean HasSubTree(TreeNode root1, TreeNode root2){
+		boolean res = false;
+		if (root1 != null && root2 != null) {
+			if (root1.val == root2.val) {
+				//根节点值相同的时候
+				res = Same(root1, root2);
+			}
+			if (!res) {
+				res = HasSubTree(root1.left, root2);
+			}
+			if (!res) {
+				res = HasSubTree(root1.right, root2);
+			}
+		}
+		return res;
+	}
+	
+	public static boolean Same(TreeNode first, TreeNode second){
+		if (second == null) {
+			return true;
+		}
+		if (first == null) {
+			return false;
+		}
+		if (first.val != second.val) {
+			return false;
+		}
+		return Same(first.left, second.left) && Same(first.right, second.right);
+	}
+	
+	//合并排序链表
+	public static ListNode Merge(ListNode list1, ListNode list2){
+		if (list1 == null) {
+			return list2;
+		}
+		if (list2 == null) {
 			return list1;
 		}
 		
+		ListNode m;
+		if (list1.val < list2.val) {
+			m = list1;
+			m.next = Merge(list1.next, list2);
+		}else{
+			m = list2;
+			m.next = Merge(list1, list2.next);
+		}
+		return m;
 	}
 	
 	//反转链表  考虑输入为空

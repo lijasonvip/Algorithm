@@ -43,4 +43,8 @@ class TreeNode{
 		this.left = null;
 		this.right = null;
 	}
+	
+	public String toString(){
+		return String.valueOf(this.val);
+	}
 }
