@@ -14,14 +14,40 @@ public class NowCoderOffer {
 	public static void main(String[] args) {
 		int[] data = { 1, 2, 3, 4, 5};
 		ListNode head = construct(data);
-		System.out.println(FindKthToTail(head, 6).val);
+		ListNode tail = ReverseList(head);
+		while(tail != null){
+			System.out.print(tail.val + " ");
+			tail = tail.next;
+		}
 	}
 	
-	//反转链表
+	//合并排序链表
+	public static ListNode Merge(ListNode list1, ListNode lisit2){
+		if (list1 == null) {
+			return lisit2;
+		}
+		if (lisit2 == null) {
+			return list1;
+		}
+		
+	}
+	
+	//反转链表  考虑输入为空
 	public static ListNode ReverseList(ListNode head){
+		if (head == null) {
+			return null;
+		}
 		ListNode dummy = new ListNode(-1);
 		dummy.next = head;
-		
+		ListNode pre = dummy, prenext = head, cur = head, curnext = head.next;
+		while(curnext != null){
+			pre.next = curnext;
+			cur.next = curnext.next;
+			curnext.next = prenext;
+			prenext = curnext;
+			curnext = cur.next;
+		}
+		return dummy.next;
 	}
 	
 	//链表倒数第k个节点
