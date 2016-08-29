@@ -1,59 +1,160 @@
 package com.bo.acmcoder;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.TreeSet;
+
+import javax.naming.spi.DirStateFactory.Result;
 
 public class NowCoderOffer {
 
 	// 牛客网的剑指offer
 
 	public static void main(String[] args) {
-		
-
+		String string = "abcd";
+		Permutation(string);
 	}
-	
-	//二叉搜索树与双向链表
-	
+
+	// 字符串的排列 递归
+	public static ArrayList<String> Permutation(String str) {
+		ArrayList<String> res = new ArrayList<>();
+		if (str == null || str.length() == 0) {
+			return res;
+		}
+		char[] chars = str.toCharArray();
+		TreeSet<String> temp = new TreeSet<>();
+		Permutation(chars, 0, temp);
+		res.addAll(temp);
+		return res;
+	}
+
+	public static void Permutation(char[] chars, int begin, TreeSet<String> res) {
+		if (chars == null || chars.length == 0 || begin < 0 || begin > chars.length - 1) {
+			return;
+		}
+		if (begin == chars.length - 1) {
+			res.add(String.valueOf(chars));
+		} else {
+			for (int i = begin; i < chars.length; i++) {
+				swap(chars, begin, i);
+				Permutation(chars, begin + 1, res);
+				swap(chars, i, begin);
+			}
+		}
+	}
+
+	public static void swap(char[] chars, int i, int j) {
+		char temp = chars[i];
+		chars[i] = chars[j];
+		chars[j] = temp;
+	}
+
+	// 字符串排列迭代算法
+	public ArrayList<String> Permutation2(String str) {
+		ArrayList<String> res = new ArrayList<>();
+
+		if (str != null && str.length() > 0) {
+			char[] seq = str.toCharArray();
+			Arrays.sort(seq); // 排列
+			res.add(String.valueOf(seq)); // 先输出一个解
+
+			int len = seq.length;
+			while (true) {
+				int p = len - 1, q;
+				// 从后向前找一个seq[p - 1] < seq[p]
+				while (p >= 1 && seq[p - 1] >= seq[p])
+					--p;
+				if (p == 0)
+					break; // 已经是“最小”的排列，退出
+				// 从p向后找最后一个比seq[p]大的数
+				q = p;
+				--p;
+				while (q < len && seq[q] > seq[p])
+					q++;
+				--q;
+				// 交换这两个位置上的值
+				swap(seq, q, p);
+				// 将p之后的序列倒序排列
+				reverse(seq, p + 1);
+				res.add(String.valueOf(seq));
+			}
+		}
+
+		return res;
+	}
+
+	public static void reverse(char[] seq, int start) {
+		int len;
+		if (seq == null || (len = seq.length) <= start)
+			return;
+		for (int i = 0; i < ((len - start) >> 1); i++) {
+			int p = start + i, q = len - 1 - i;
+			if (p != q)
+				swap(seq, p, q);
+		}
+	}
+
+	// 二叉搜索树与双向链表
+	public static TreeNode Convert(TreeNode pRootOfTree) {
+
+		if (pRootOfTree == null)
+			return null;
+		if (pRootOfTree.left == null && pRootOfTree.right == null)
+			return pRootOfTree;
+		TreeNode left = Convert(pRootOfTree.left);
+		TreeNode p = left;
+		while (p != null && p.right != null) {
+			p = p.right;
+		}
+		if (left != null) {
+			p.right = pRootOfTree;
+			pRootOfTree.left = p;
+		}
+		TreeNode right = Convert(pRootOfTree.right);
+		if (right != null) {
+			pRootOfTree.right = right;
+			right.left = pRootOfTree;
+		}
+
+		return left != null ? left : pRootOfTree;
+	}
 
 	// 复杂链表的复制
-	public RandomListNode Clone2(RandomListNode pHead)
-    {
-       RandomListNode p=pHead;
-        RandomListNode t=pHead;
-        while(p!=null){
-             RandomListNode q=new RandomListNode(p.label);
-            q.next=p.next;
-            p.next=q;
-            p=q.next;
-        }
-        while(t!=null){
-            RandomListNode q=t.next;
-            if(t.random!=null)
-            q.random=t.random.next;
-            t=q.next;
-             
-        }
-        RandomListNode s=new RandomListNode(0);
-        RandomListNode s1=s;
-       while(pHead!=null){
-           RandomListNode  q=pHead.next;
-             pHead.next=q.next;
-           q.next=s.next;
-           s.next=q;
-           s=s.next;
-           pHead=pHead.next;
-          
-            
-       }
-        return s1.next;
-         
-    }
-	
+	public RandomListNode Clone2(RandomListNode pHead) {
+		RandomListNode p = pHead;
+		RandomListNode t = pHead;
+		while (p != null) {
+			RandomListNode q = new RandomListNode(p.label);
+			q.next = p.next;
+			p.next = q;
+			p = q.next;
+		}
+		while (t != null) {
+			RandomListNode q = t.next;
+			if (t.random != null)
+				q.random = t.random.next;
+			t = q.next;
+
+		}
+		RandomListNode s = new RandomListNode(0);
+		RandomListNode s1 = s;
+		while (pHead != null) {
+			RandomListNode q = pHead.next;
+			pHead.next = q.next;
+			q.next = s.next;
+			s.next = q;
+			s = s.next;
+			pHead = pHead.next;
+
+		}
+		return s1.next;
+
+	}
+
 	public RandomListNode Clone(RandomListNode pHead) {
 		CloneNodes(pHead);
 		Sibling(pHead);
