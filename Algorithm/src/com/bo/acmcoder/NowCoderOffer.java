@@ -1,7 +1,11 @@
 package com.bo.acmcoder;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 
 public class NowCoderOffer {
@@ -9,84 +13,239 @@ public class NowCoderOffer {
 	// 牛客网的剑指offer
 
 	public static void main(String[] args) {
-		int[] data = { 1, 3, 5, 7, 9 };
-		int[] data2 = { 2, 4, 6, 8, 10 };
-		ListNode head = Merge(construct(data), construct(data2));
-		while (head != null) {
-			System.out.print(head.val + " ");
-			head = head.next;
-		}
+		RandomListNode[] nodes = new RandomListNode[5];
+		nodes[0] = new RandomListNode(1);
+		nodes[1] = new RandomListNode(2);
+		nodes[2] = new RandomListNode(3);
+		nodes[3] = new RandomListNode(4);
+		nodes[4] = new RandomListNode(5);
+		
+		nodes[0].random = nodes[2];
+		nodes[1].random = nodes[4];
+		nodes[3].random = nodes[1];
+		
+		NowCoderOffer c = new NowCoderOffer();
+		RandomListNode temp = c.Clone(nodes[0]);
+		
+		
 	}
 	
-	//
+	//复杂链表的复制
+	public RandomListNode Clone(RandomListNode pHead)
+    {
+ 		CloneNodes(pHead);
+        Sibling(pHead);
+        return reconnext(pHead);
+    }
+    
+    public void CloneNodes(RandomListNode pHead){
+        RandomListNode work = pHead;
+        while(work != null){
+            RandomListNode temp = new RandomListNode(work.label);
+            temp.next = work.next;
+            work.next = temp;
+            work = work.next.next;
+        }
+    }
+    
+    public void Sibling(RandomListNode pHead){
+        RandomListNode work = pHead;
+        while(work != null){
+            work.next.random = work.random.next;
+            work = work.next.next;
+        }
+    }
+    
+    public RandomListNode reconnext(RandomListNode pHead){
+        RandomListNode work = pHead;
+        RandomListNode head = null;
+        RandomListNode node = null;
+        if(head == null){
+            head = work.next;
+            node = head;
+            work = work.next.next;
+        }
+        while(work != null){
+            work.next = work.next.next;
+            node.next = node.next.next;
+        }
+        return head;
+    }
 	
+	//找一个和为某值得路径
+	private ArrayList<ArrayList<Integer>> listAll = new ArrayList<ArrayList<Integer>>();
+    private ArrayList<Integer> list = new ArrayList<Integer>();
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root,int target) {
+        if(root == null) return listAll;
+        list.add(root.val);
+        target -= root.val;
+        if(target == 0 && root.left == null && root.right == null)
+            listAll.add(new ArrayList<Integer>(list));
+        FindPath(root.left, target);
+        FindPath(root.right, target);
+        list.remove(list.size()-1);
+        return listAll;
+    }
+	
+	public static TreeNode constructTree(int[] data){
+		TreeNode[] nodes = new TreeNode[data.length];
+		for (int i = 0; i < nodes.length; i++) {
+			nodes[i] = new TreeNode(data[i]);
+		}
+		for (int i = 0; i < (nodes.length-1)/2; i++) {
+			nodes[i].left = nodes[2*i + 1];
+			nodes[i].right = nodes[2*i+2];
+		}
+		return nodes[0];
+	}
+	
+	//后续遍历是不是一颗排序二叉树
+	public static boolean VerifySequenceOfBST(int[] sequence){
+		if (sequence == null || sequence.length == 0) {
+			return false;
+		}
+		int root = sequence[sequence.length-1];
+		int i = 0;
+		for (; i < sequence.length-1; i++) {
+			if (sequence[i] > root) {
+				break;
+			}
+		}
+		int j = i;
+		for (; j < sequence.length-1; ++j) {
+			if (sequence[j] < root) {
+				return false;
+			}
+		}
+		boolean left = true;
+		if (i > 0) {
+			left = VerifySequenceOfBST(Arrays.copyOfRange(sequence, 0, i));
+		}
+		boolean right = true;
+		if (i < sequence.length - 1) {
+			right = VerifySequenceOfBST(Arrays.copyOfRange(sequence, i, sequence.length-1));
+		}
+		return (left && right);
+	}
+	
+	
+	//从上到下打印二叉树
+	public static ArrayList<Integer> PrintFromTopToBottom(TreeNode root){
+		ArrayList<Integer> res = new ArrayList<>();
+		if (root == null) {
+			return res;
+		}
+		Queue<TreeNode> queue = new LinkedList<>();
+		
+		queue.offer(root);
+		while(!queue.isEmpty()){
+			TreeNode node = queue.poll();
+			res.add(node.val);
+			if (node.left != null) {
+				queue.offer(node.left);
+			}
+			if (node.right != null) {
+				queue.offer(node.right);
+			}
+		}
+		return res;
+	}
+
+	// 入栈顺序是否合法
+	public static boolean IsPopOrder(int[] pushA, int[] popA) {
+		Stack<Integer> stack = new Stack<>();
+		int j=0;
+		for (int i = 0; i < pushA.length; i++) {
+			stack.push(pushA[i]);
+			while (!stack.isEmpty() && stack.peek() == popA[j]) {
+					stack.pop();
+					j++;
+			}
+		}
+		return stack.isEmpty();
+	}
+
 	// 包含min 和 max 函数的栈
-	//写个内部类吧
-	class MinMaxStack{
+	// 写个内部类吧
+	class MinMaxStack {
 		Stack<Integer> original = new Stack<>();
 		Stack<Integer> min = new Stack<>();
-		
-		public void push(int node){
+
+		public void push(int node) {
 			if (original.isEmpty()) {
 				original.push(node);
 				min.push(node);
-			}
-			else{
+			} else {
 				original.push(node);
 				if (node < min.peek()) {
 					min.push(node);
-				}else{
+				} else {
 					min.push(min.peek());
 				}
 			}
 		}
-		
-		public void pop(){
+
+		public void pop() {
 			if (!original.isEmpty()) {
 				original.pop();
 				min.pop();
 			}
 		}
-		
-		public int top(){
+
+		public int top() {
 			if (!original.isEmpty()) {
 				return original.peek();
 			}
 			return -1;
 		}
-		
-		public int min(){
+
+		public int min() {
 			return min.peek();
 		}
 	}
 
 	// 打印矩阵
-	   public ArrayList<Integer> printMatrix(int[][] matrix) {
-	        ArrayList<Integer> result = new ArrayList<Integer>() ;
-	        if(matrix==null || matrix.length==0) { return result ; }
-	 
-	        printMatrixClockWisely(matrix, 0, 0, matrix.length - 1, matrix[0].length - 1, result);
-	 
-	        return result ;
-	    }
-	     
-	    public void printMatrixClockWisely(int[][] matrix, int startRow, int startCol, int endRow, int endCol, ArrayList<Integer> result) {
-	        if(startRow<endRow && startCol<endCol) {
-	            for(int j=startCol; j<=endCol; j++) { result.add(matrix[startRow][j]) ; }   //Right
-	            for(int i=startRow+1; i<=endRow-1; i++) { result.add(matrix[i][endCol]) ; }     //Down
-	            for(int j=endCol; j>=startCol; j--) { result.add(matrix[endRow][j]) ; }     //Left
-	            for(int i=endRow-1; i>=startRow+1; i--) { result.add(matrix[i][startCol]) ; }   //Up
-	            printMatrixClockWisely(matrix, startRow + 1, startCol + 1, endRow - 1, endCol - 1, result) ;
-	        }else if(startRow==endRow && startCol<endCol) {
-	            for(int j=startCol; j<=endCol; j++) { result.add(matrix[startRow][j]) ; }
-	        }else if(startRow<endRow && startCol==endCol) {
-	            for(int i=startRow; i<=endRow; i++) { result.add(matrix[i][endCol]) ; }
-	        }else if(startRow==endRow && startCol==endCol) {
-	            result.add(matrix[startRow][startCol]) ;
-	        }else {
-	            return ;
-	        }
-	    }
+	public ArrayList<Integer> printMatrix(int[][] matrix) {
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		if (matrix == null || matrix.length == 0) {
+			return result;
+		}
+
+		printMatrixClockWisely(matrix, 0, 0, matrix.length - 1, matrix[0].length - 1, result);
+
+		return result;
+	}
+
+	public void printMatrixClockWisely(int[][] matrix, int startRow, int startCol, int endRow, int endCol,
+			ArrayList<Integer> result) {
+		if (startRow < endRow && startCol < endCol) {
+			for (int j = startCol; j <= endCol; j++) {
+				result.add(matrix[startRow][j]);
+			} // Right
+			for (int i = startRow + 1; i <= endRow - 1; i++) {
+				result.add(matrix[i][endCol]);
+			} // Down
+			for (int j = endCol; j >= startCol; j--) {
+				result.add(matrix[endRow][j]);
+			} // Left
+			for (int i = endRow - 1; i >= startRow + 1; i--) {
+				result.add(matrix[i][startCol]);
+			} // Up
+			printMatrixClockWisely(matrix, startRow + 1, startCol + 1, endRow - 1, endCol - 1, result);
+		} else if (startRow == endRow && startCol < endCol) {
+			for (int j = startCol; j <= endCol; j++) {
+				result.add(matrix[startRow][j]);
+			}
+		} else if (startRow < endRow && startCol == endCol) {
+			for (int i = startRow; i <= endRow; i++) {
+				result.add(matrix[i][endCol]);
+			}
+		} else if (startRow == endRow && startCol == endCol) {
+			result.add(matrix[startRow][startCol]);
+		} else {
+			return;
+		}
+	}
 
 	// 镜像二叉树
 	// 递归
@@ -450,4 +609,17 @@ class ListNode {
 	public String toString() {
 		return String.valueOf(this.val);
 	}
+}
+
+class RandomListNode {
+    int label;
+    RandomListNode next = null;
+    RandomListNode random = null;
+
+    RandomListNode(int label) {
+        this.label = label;
+    }
+    public String toString(){
+    	return String.valueOf(label);
+    }
 }
