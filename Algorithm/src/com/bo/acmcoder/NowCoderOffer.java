@@ -16,7 +16,7 @@ public class NowCoderOffer {
 
 	public static void main(String[] args) {
 		String string = "abcd";
-		Permutation(string);
+		Permutation2(string);
 	}
 
 	// 字符串的排列 递归
@@ -54,7 +54,7 @@ public class NowCoderOffer {
 	}
 
 	// 字符串排列迭代算法
-	public ArrayList<String> Permutation2(String str) {
+	public static ArrayList<String> Permutation2(String str) {
 		ArrayList<String> res = new ArrayList<>();
 
 		if (str != null && str.length() > 0) {
