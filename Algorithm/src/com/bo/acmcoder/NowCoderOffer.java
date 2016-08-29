@@ -4,25 +4,93 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-
 public class NowCoderOffer {
 
 	// 牛客网的剑指offer
 
 	public static void main(String[] args) {
-		int[] data = { 1, 3, 5, 7, 9};
-		int[] data2 = {2, 4, 6, 8, 10};
+		int[] data = { 1, 3, 5, 7, 9 };
+		int[] data2 = { 2, 4, 6, 8, 10 };
 		ListNode head = Merge(construct(data), construct(data2));
-		while(head != null){
+		while (head != null) {
 			System.out.print(head.val + " ");
 			head = head.next;
 		}
 	}
 	
+	//
 	
-	//镜像二叉树 
-	//递归
-	public void Mirror(TreeNode root){
+	// 包含min 和 max 函数的栈
+	//写个内部类吧
+	class MinMaxStack{
+		Stack<Integer> original = new Stack<>();
+		Stack<Integer> min = new Stack<>();
+		
+		public void push(int node){
+			if (original.isEmpty()) {
+				original.push(node);
+				min.push(node);
+			}
+			else{
+				original.push(node);
+				if (node < min.peek()) {
+					min.push(node);
+				}else{
+					min.push(min.peek());
+				}
+			}
+		}
+		
+		public void pop(){
+			if (!original.isEmpty()) {
+				original.pop();
+				min.pop();
+			}
+		}
+		
+		public int top(){
+			if (!original.isEmpty()) {
+				return original.peek();
+			}
+			return -1;
+		}
+		
+		public int min(){
+			return min.peek();
+		}
+	}
+
+	// 打印矩阵
+	   public ArrayList<Integer> printMatrix(int[][] matrix) {
+	        ArrayList<Integer> result = new ArrayList<Integer>() ;
+	        if(matrix==null || matrix.length==0) { return result ; }
+	 
+	        printMatrixClockWisely(matrix, 0, 0, matrix.length - 1, matrix[0].length - 1, result);
+	 
+	        return result ;
+	    }
+	     
+	    public void printMatrixClockWisely(int[][] matrix, int startRow, int startCol, int endRow, int endCol, ArrayList<Integer> result) {
+	        if(startRow<endRow && startCol<endCol) {
+	            for(int j=startCol; j<=endCol; j++) { result.add(matrix[startRow][j]) ; }   //Right
+	            for(int i=startRow+1; i<=endRow-1; i++) { result.add(matrix[i][endCol]) ; }     //Down
+	            for(int j=endCol; j>=startCol; j--) { result.add(matrix[endRow][j]) ; }     //Left
+	            for(int i=endRow-1; i>=startRow+1; i--) { result.add(matrix[i][startCol]) ; }   //Up
+	            printMatrixClockWisely(matrix, startRow + 1, startCol + 1, endRow - 1, endCol - 1, result) ;
+	        }else if(startRow==endRow && startCol<endCol) {
+	            for(int j=startCol; j<=endCol; j++) { result.add(matrix[startRow][j]) ; }
+	        }else if(startRow<endRow && startCol==endCol) {
+	            for(int i=startRow; i<=endRow; i++) { result.add(matrix[i][endCol]) ; }
+	        }else if(startRow==endRow && startCol==endCol) {
+	            result.add(matrix[startRow][startCol]) ;
+	        }else {
+	            return ;
+	        }
+	    }
+
+	// 镜像二叉树
+	// 递归
+	public void Mirror(TreeNode root) {
 		if (root == null) {
 			return;
 		}
@@ -39,23 +107,36 @@ public class NowCoderOffer {
 			Mirror(root.right);
 		}
 	}
-	
-	//迭代
-	public static void Mirror_Iteration(TreeNode root){
+
+	// 迭代
+	public static void Mirror_Iteration(TreeNode root) {
 		if (root == null) {
 			return;
 		}
 		Stack<TreeNode> stack = new Stack<>();
 		stack.push(root);
-		
+		while (!stack.isEmpty()) {
+			TreeNode node = stack.pop();
+			if (node.left != null || node.right != null) {
+				TreeNode temp = node.left;
+				node.left = node.right;
+				node.right = temp;
+			}
+			if (node.left != null) {
+				stack.push(node.left);
+			}
+			if (node.right != null) {
+				stack.push(node.right);
+			}
+		}
 	}
-	
-	//树的子结构 判断B是不是A的子树
-	public static boolean HasSubTree(TreeNode root1, TreeNode root2){
+
+	// 树的子结构 判断B是不是A的子树
+	public static boolean HasSubTree(TreeNode root1, TreeNode root2) {
 		boolean res = false;
 		if (root1 != null && root2 != null) {
 			if (root1.val == root2.val) {
-				//根节点值相同的时候
+				// 根节点值相同的时候
 				res = Same(root1, root2);
 			}
 			if (!res) {
@@ -67,8 +148,8 @@ public class NowCoderOffer {
 		}
 		return res;
 	}
-	
-	public static boolean Same(TreeNode first, TreeNode second){
+
+	public static boolean Same(TreeNode first, TreeNode second) {
 		if (second == null) {
 			return true;
 		}
@@ -80,36 +161,36 @@ public class NowCoderOffer {
 		}
 		return Same(first.left, second.left) && Same(first.right, second.right);
 	}
-	
-	//合并排序链表
-	public static ListNode Merge(ListNode list1, ListNode list2){
+
+	// 合并排序链表
+	public static ListNode Merge(ListNode list1, ListNode list2) {
 		if (list1 == null) {
 			return list2;
 		}
 		if (list2 == null) {
 			return list1;
 		}
-		
+
 		ListNode m;
 		if (list1.val < list2.val) {
 			m = list1;
 			m.next = Merge(list1.next, list2);
-		}else{
+		} else {
 			m = list2;
 			m.next = Merge(list1, list2.next);
 		}
 		return m;
 	}
-	
-	//反转链表  考虑输入为空
-	public static ListNode ReverseList(ListNode head){
+
+	// 反转链表 考虑输入为空
+	public static ListNode ReverseList(ListNode head) {
 		if (head == null) {
 			return null;
 		}
 		ListNode dummy = new ListNode(-1);
 		dummy.next = head;
 		ListNode pre = dummy, prenext = head, cur = head, curnext = head.next;
-		while(curnext != null){
+		while (curnext != null) {
 			pre.next = curnext;
 			cur.next = curnext.next;
 			curnext.next = prenext;
@@ -118,29 +199,29 @@ public class NowCoderOffer {
 		}
 		return dummy.next;
 	}
-	
-	//链表倒数第k个节点
-	//考虑k大于链表长度 输入为空的情况
-	public static ListNode FindKthToTail(ListNode head, int k){
+
+	// 链表倒数第k个节点
+	// 考虑k大于链表长度 输入为空的情况
+	public static ListNode FindKthToTail(ListNode head, int k) {
 		if (head == null) {
 			return null;
 		}
 		ListNode temp = head;
-		while(temp.next != null && k > 1) {
+		while (temp.next != null && k > 1) {
 			temp = temp.next;
 			k--;
 		}
 		if (k != 1) {
 			return null;
 		}
-		while(temp.next != null){
+		while (temp.next != null) {
 			temp = temp.next;
 			head = head.next;
 		}
 		return head;
 	}
-	
-	public static ListNode construct(int[] data){
+
+	public static ListNode construct(int[] data) {
 		ListNode head = new ListNode(data[0]);
 		ListNode cur = head;
 		for (int i = 1; i < data.length; i++) {
@@ -182,23 +263,22 @@ public class NowCoderOffer {
 			}
 		}
 	}
-	
-	public static void reOrderArray2(int[] array){
+
+	public static void reOrderArray2(int[] array) {
 		List<Integer> odd = new ArrayList<>();
 		List<Integer> even = new ArrayList<>();
 		for (int i = 0; i < array.length; i++) {
 			if (array[i] % 2 == 0) {
 				even.add(array[i]);
-			}
-			else{
+			} else {
 				odd.add(array[i]);
 			}
 		}
-		int i=0;
-		for(int e : odd){
+		int i = 0;
+		for (int e : odd) {
 			array[i++] = e;
 		}
-		for(int e:even){
+		for (int e : even) {
 			array[i++] = e;
 		}
 	}
@@ -360,14 +440,14 @@ class NowCodeStack {
 }
 
 class ListNode {
-    int val;
-    ListNode next = null;
+	int val;
+	ListNode next = null;
 
-    ListNode(int val) {
-        this.val = val;
-    }
-    
-    public String toString(){
-    	return String.valueOf(this.val);
-    }
+	ListNode(int val) {
+		this.val = val;
+	}
+
+	public String toString() {
+		return String.valueOf(this.val);
+	}
 }
