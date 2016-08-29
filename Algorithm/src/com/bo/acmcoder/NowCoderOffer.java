@@ -13,106 +13,135 @@ public class NowCoderOffer {
 	// 牛客网的剑指offer
 
 	public static void main(String[] args) {
-		RandomListNode[] nodes = new RandomListNode[5];
-		nodes[0] = new RandomListNode(1);
-		nodes[1] = new RandomListNode(2);
-		nodes[2] = new RandomListNode(3);
-		nodes[3] = new RandomListNode(4);
-		nodes[4] = new RandomListNode(5);
 		
-		nodes[0].random = nodes[2];
-		nodes[1].random = nodes[4];
-		nodes[3].random = nodes[1];
-		
-		NowCoderOffer c = new NowCoderOffer();
-		RandomListNode temp = c.Clone(nodes[0]);
-		
-		
+
 	}
 	
-	//复杂链表的复制
-	public RandomListNode Clone(RandomListNode pHead)
+	//二叉搜索树与双向链表
+	
+
+	// 复杂链表的复制
+	public RandomListNode Clone2(RandomListNode pHead)
     {
- 		CloneNodes(pHead);
-        Sibling(pHead);
-        return reconnext(pHead);
-    }
-    
-    public void CloneNodes(RandomListNode pHead){
-        RandomListNode work = pHead;
-        while(work != null){
-            RandomListNode temp = new RandomListNode(work.label);
-            temp.next = work.next;
-            work.next = temp;
-            work = work.next.next;
+       RandomListNode p=pHead;
+        RandomListNode t=pHead;
+        while(p!=null){
+             RandomListNode q=new RandomListNode(p.label);
+            q.next=p.next;
+            p.next=q;
+            p=q.next;
         }
-    }
-    
-    public void Sibling(RandomListNode pHead){
-        RandomListNode work = pHead;
-        while(work != null){
-            work.next.random = work.random.next;
-            work = work.next.next;
+        while(t!=null){
+            RandomListNode q=t.next;
+            if(t.random!=null)
+            q.random=t.random.next;
+            t=q.next;
+             
         }
-    }
-    
-    public RandomListNode reconnext(RandomListNode pHead){
-        RandomListNode work = pHead;
-        RandomListNode head = null;
-        RandomListNode node = null;
-        if(head == null){
-            head = work.next;
-            node = head;
-            work = work.next.next;
-        }
-        while(work != null){
-            work.next = work.next.next;
-            node.next = node.next.next;
-        }
-        return head;
+        RandomListNode s=new RandomListNode(0);
+        RandomListNode s1=s;
+       while(pHead!=null){
+           RandomListNode  q=pHead.next;
+             pHead.next=q.next;
+           q.next=s.next;
+           s.next=q;
+           s=s.next;
+           pHead=pHead.next;
+          
+            
+       }
+        return s1.next;
+         
     }
 	
-	//找一个和为某值得路径
+	public RandomListNode Clone(RandomListNode pHead) {
+		CloneNodes(pHead);
+		Sibling(pHead);
+		return reconnext(pHead);
+	}
+
+	public void CloneNodes(RandomListNode pHead) {
+		RandomListNode work = pHead;
+		while (work != null) {
+			RandomListNode temp = new RandomListNode(work.label);
+			temp.next = temp.random = null;
+			temp.next = work.next;
+			work.next = temp;
+			work = work.next.next;
+		}
+	}
+
+	public void Sibling(RandomListNode pHead) {
+		RandomListNode work = pHead;
+		while (work != null) {
+			if (work.random != null) {
+				work.next.random = work.random.next;
+			}
+
+			work = work.next.next;
+		}
+	}
+
+	public RandomListNode reconnext(RandomListNode pHead) {
+		RandomListNode work = pHead;
+		RandomListNode head = null;
+		RandomListNode node = null;
+		if (head == null) {
+			head = work.next;
+			node = head;
+			work = work.next.next;
+		}
+		while (work != null) {
+			node.next = work.next;
+			work = work.next.next;
+			node = node.next;
+		}
+		return head;
+	}
+
+	// 找一个和为某值得路径
 	private ArrayList<ArrayList<Integer>> listAll = new ArrayList<ArrayList<Integer>>();
-    private ArrayList<Integer> list = new ArrayList<Integer>();
-    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root,int target) {
-        if(root == null) return listAll;
-        list.add(root.val);
-        target -= root.val;
-        if(target == 0 && root.left == null && root.right == null)
-            listAll.add(new ArrayList<Integer>(list));
-        FindPath(root.left, target);
-        FindPath(root.right, target);
-        list.remove(list.size()-1);
-        return listAll;
-    }
-	
-	public static TreeNode constructTree(int[] data){
+	private ArrayList<Integer> list = new ArrayList<Integer>();
+
+	public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int target) {
+		if (root == null)
+			return listAll;
+		list.add(root.val);
+		target -= root.val;
+		if (target == 0 && root.left == null && root.right == null)
+			listAll.add(new ArrayList<Integer>(list));
+		FindPath(root.left, target);
+		FindPath(root.right, target);
+		list.remove(list.size() - 1);
+		return listAll;
+	}
+
+	public static TreeNode constructTree(int[] data) {
 		TreeNode[] nodes = new TreeNode[data.length];
 		for (int i = 0; i < nodes.length; i++) {
 			nodes[i] = new TreeNode(data[i]);
 		}
-		for (int i = 0; i < (nodes.length-1)/2; i++) {
-			nodes[i].left = nodes[2*i + 1];
-			nodes[i].right = nodes[2*i+2];
+		for (int i = 0; i < (nodes.length - 1) / 2; i++) {
+			nodes[i].left = nodes[2 * i + 1];
+			nodes[i].right = nodes[2 * i + 2];
 		}
 		return nodes[0];
 	}
-	
-	//后续遍历是不是一颗排序二叉树
-	public static boolean VerifySequenceOfBST(int[] sequence){
+
+	// 后续遍历是不是一颗排序二叉树
+	public static boolean VerifySequenceOfBST(int[] sequence) {
 		if (sequence == null || sequence.length == 0) {
 			return false;
 		}
-		int root = sequence[sequence.length-1];
+		int root = sequence[sequence.length - 1];
 		int i = 0;
-		for (; i < sequence.length-1; i++) {
+		for (; i < sequence.length - 1; i++) {
 			if (sequence[i] > root) {
 				break;
 			}
 		}
 		int j = i;
-		for (; j < sequence.length-1; ++j) {
+		for (; j < sequence.length - 1; ++j) {
 			if (sequence[j] < root) {
 				return false;
 			}
@@ -123,22 +152,21 @@ public class NowCoderOffer {
 		}
 		boolean right = true;
 		if (i < sequence.length - 1) {
-			right = VerifySequenceOfBST(Arrays.copyOfRange(sequence, i, sequence.length-1));
+			right = VerifySequenceOfBST(Arrays.copyOfRange(sequence, i, sequence.length - 1));
 		}
 		return (left && right);
 	}
-	
-	
-	//从上到下打印二叉树
-	public static ArrayList<Integer> PrintFromTopToBottom(TreeNode root){
+
+	// 从上到下打印二叉树
+	public static ArrayList<Integer> PrintFromTopToBottom(TreeNode root) {
 		ArrayList<Integer> res = new ArrayList<>();
 		if (root == null) {
 			return res;
 		}
 		Queue<TreeNode> queue = new LinkedList<>();
-		
+
 		queue.offer(root);
-		while(!queue.isEmpty()){
+		while (!queue.isEmpty()) {
 			TreeNode node = queue.poll();
 			res.add(node.val);
 			if (node.left != null) {
@@ -154,12 +182,12 @@ public class NowCoderOffer {
 	// 入栈顺序是否合法
 	public static boolean IsPopOrder(int[] pushA, int[] popA) {
 		Stack<Integer> stack = new Stack<>();
-		int j=0;
+		int j = 0;
 		for (int i = 0; i < pushA.length; i++) {
 			stack.push(pushA[i]);
 			while (!stack.isEmpty() && stack.peek() == popA[j]) {
-					stack.pop();
-					j++;
+				stack.pop();
+				j++;
 			}
 		}
 		return stack.isEmpty();
@@ -612,14 +640,15 @@ class ListNode {
 }
 
 class RandomListNode {
-    int label;
-    RandomListNode next = null;
-    RandomListNode random = null;
+	int label;
+	RandomListNode next = null;
+	RandomListNode random = null;
 
-    RandomListNode(int label) {
-        this.label = label;
-    }
-    public String toString(){
-    	return String.valueOf(label);
-    }
+	RandomListNode(int label) {
+		this.label = label;
+	}
+
+	public String toString() {
+		return String.valueOf(label);
+	}
 }
