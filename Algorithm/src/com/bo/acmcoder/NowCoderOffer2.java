@@ -1,8 +1,13 @@
 package com.bo.acmcoder;
 
 import java.util.Scanner;
+import java.util.Stack;
+import java.util.concurrent.BlockingDeque;
 
 import javax.print.DocFlavor.INPUT_STREAM;
+import javax.xml.crypto.Data;
+
+import com.bo.offer.Tree;
 
 public class NowCoderOffer2 {
 
@@ -10,8 +15,150 @@ public class NowCoderOffer2 {
 
 	public static void main(String[] args) {
 
-		int[] data = {7,5,6,4};
-		InversePairs(data);
+		int[] data = {1,2,3,3,3,3,4,5};
+		System.out.println(GetNumberOfK(data, 3));
+	}
+	
+	//二叉树的深度
+	public static int TreeDepth(TreeNode pRoot){
+		if (pRoot == null) {
+			return 0;
+		}
+		
+		int left = TreeDepth(pRoot.left);
+		int right = TreeDepth(pRoot.right);
+		
+		return (left > right) ? (left + 1) : (right + 1);
+	}
+	//迭代求二叉树深度使用栈 求栈的最大深度即二叉树的深度
+	public static int TreeDepth2(TreeNode root){
+		if (root == null) {
+			return 0;
+		}
+		Stack<TreeNode> stack = new Stack<>();
+		int max = 0;
+		stack.push(root);
+		TreeNode p = root.left;
+		while(p != null || !stack.isEmpty()){
+			while(p != null){
+				stack.push(p);
+				p = p.left;
+			}
+			if (stack.size() > max) {
+				max = stack.size();
+			}
+			stack.pop();
+			p = stack.peek().right;
+			
+		}
+	}
+	
+	public static void DFS(TreeNode root){
+		Stack<TreeNode> stack = new Stack<>();
+		stack.push(root);
+		TreeNode node;;
+		while(!stack.isEmpty()){
+			node = stack.pop();
+			System.out.print(node.val + " ");
+			if (node.right != null) {
+				stack.push(node.right);
+			}
+			if (node.left != null) {
+				stack.push(node.left);
+			}
+		}
+	}
+	
+	//数字在排序数组中出现的次数
+	public static int GetNumberOfK(int[] array, int k){
+		int number = 0;
+		if (array.length == 0) {
+			return number;
+		}
+		int first = GetFirstK(array, k, 0, array.length-1);
+		int last = GetLastK(array, k, 0, array.length - 1);
+		if (first > -1 && last > -1) {
+			number = last - first + 1;
+		}
+		return number;
+	}
+	public static int GetFirstK(int[] array, int k, int start, int end){
+		if (start > end) {
+			return -1;
+		}
+		int middle = start + (end - start) / 2;
+		int middata = array[middle];
+		if (middata == k) {
+			if ((middle > 0 && array[middle-1] != k) || middle == 0) {
+				return middle;
+			}
+			else
+				end = middle - 1;
+		}
+		else if (middata > k) {
+			end = middle - 1;
+		}else {
+			start = middle + 1;
+		}
+		return GetFirstK(array, k, start, end);
+	}
+	
+	public static int GetLastK(int[] array, int k, int start, int end){
+		if (start > end) {
+			return -1;
+		}
+		int midindex = start + (end - start) / 2;
+		int middata = array[midindex];
+		if (middata == k) {
+			if ((midindex < end && array[midindex+1] != k) || midindex == end) {
+				return midindex;
+			}else{
+				start = midindex + 1;
+			}
+		}else if (middata > k) {
+			end = midindex - 1;
+		}else {
+			start = midindex + 1;
+		}
+		return GetLastK(array, k, start, end);
+	}
+
+	// 两个链表的第一个公共节点
+	public static ListNode FindFirstCommontNode(ListNode pHead1, ListNode pHead2) {
+		if (pHead1 == null || pHead2 == null) {
+			return null;
+		}
+		int len1 = 0, len2 = 0;
+		ListNode head1 = pHead1, head2 = pHead2;
+		while (head1 != null) {
+			head1 = head1.next;
+			len1++;
+		}
+		while (head2 != null) {
+			head2 = head2.next;
+			len2++;
+		}
+		if (len2 > len1) {
+			head1 = pHead2;
+			head2 = pHead1;
+		} else {
+			head1 = pHead1;
+			head2 = pHead2;
+		}
+		int step = 0;
+		for (; step < len1; step++) {
+			if (step < (len1-len2)) {
+				head1 = head1.next;
+				continue;
+			}else if (head1.val == head2.val) {
+				return head1;
+			}else {
+				head1 = head1.next;
+				head2 = head2.next;
+			}
+		}
+
+		return null;
 	}
 
 	// 数组中的逆序对
