@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class NowCoderOffer2 {
 
@@ -13,7 +14,27 @@ public class NowCoderOffer2 {
 		FindContinuousSequence(15);
 	}
 
-	// 单词旋转
+	//句子中单词旋转
+	public static String ReverseSentence(String str){
+		if (str == null || str.length() == 0) {
+			return "";
+		}
+		if (str.equals(" ")) {
+			return " ";
+		}
+		StringTokenizer token = new StringTokenizer(str);
+		Stack<String> stack = new Stack<>();
+		while(token.hasMoreTokens()){
+			stack.push(token.nextToken());
+		}
+		StringBuilder sBuilder = new StringBuilder();
+		while(!stack.isEmpty())
+			sBuilder.append(stack.pop() + " ");
+		return sBuilder.deleteCharAt(sBuilder.length()-1).toString();
+	}
+	
+	
+	// 左旋转
 	public static String LeftRotateString(String str, int n) {
 		if (n > str.length()) {
 			return "";
