@@ -1,22 +1,253 @@
 package com.bo.acmcoder;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 import java.util.TreeSet;
-
-import javax.naming.spi.DirStateFactory.Result;
 
 public class NowCoderOffer {
 
 	// 牛客网的剑指offer
 
 	public static void main(String[] args) {
-		String string = "abcd";
-		Permutation2(string);
+		int[] data = { 1, -2, 3, 10, -4, 7, 2, -5 };
+		FindGreatestSumOfSubArray(data);
+	}
+
+	// 把数组排成最小的数
+	public static String PrintMinNumber(int[] numbers) {
+		if (numbers == null || numbers.length == 0) {
+			return "";
+		}
+		
+		int len = numbers.length;
+		String[] strings = new String[len];
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<numbers.length;i++){
+			strings[i] = String.valueOf(numbers[i]);
+		}
+		//Arrays.sort 中定义compare
+		Arrays.sort(strings, new Comparator<String>() {
+			public int compare(String a, String b){
+				String s1 = a+b;
+				String s2 = b + a;
+				return s1.compareTo(s2);
+			}
+		});
+		for (int i = 0; i < strings.length; i++) {
+			sb.append(strings[i]);
+		}
+		return sb.toString();
+	}
+	// 自定义比较器之后利用Collections工具类排序
+	public static String minArrar(int[] numbers){
+		ArrayList<Integer> list = new ArrayList<>();
+		for(int i:numbers)
+			list.add(i);
+		// 实现了Comparator接口的compare方法，将集合元素按照compare方法的规则进行排序
+		Collections.sort(list, new Comparator<Integer>() {
+			public int compare(Integer a, Integer b){
+				String s1 = a+""+b;
+				String s2 = b+""+a;
+				return s1.compareTo(s2);
+			}
+		});
+		StringBuilder sb = new StringBuilder();
+		for(int i:list)
+			sb.append(i);
+		
+		return sb.toString();
+	}
+	
+
+	// 整数中1出现的次数
+	public static int NumberOf1Between1AndN(int n) {
+		int count = 0;
+		while (n > 0) {
+			String str = String.valueOf(n);
+			char[] chars = str.toCharArray();
+			for (int i = 0; i < chars.length; i++) {
+				if (chars[i] == '1')
+					count++;
+			}
+			n--;
+		}
+		return count;
+	}
+
+	public static int Count2(int n) {
+		int count = 0;
+		for (int i = 1; i <= n; i++) {
+			count += Number(i);
+		}
+		return count;
+	}
+
+	public static int Number(int n) {
+		int count = 0;
+		while (n != 0) {
+			if (n % 10 == 1) {
+				count++;
+			}
+			n = n / 10;
+		}
+		return count;
+	}
+
+	// 递归解法
+	public static int Count3(int n) {
+		return 0;
+	}
+
+	// 连续子数组的最大和
+	public static int FindGreatestSumOfSubArray(int[] array) {
+		if (array == null || array.length == 0) {
+			return 0;
+		}
+		int sum = 0;
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < array.length; i++) {
+			if (sum < 0) {
+				sum = array[i];
+			} else {
+				sum += array[i];
+			}
+			if (sum > max) {
+				max = sum;
+			}
+		}
+		return max;
+	}
+
+	// 最小的k个数
+	// 两种思路 基于快排的划分 和使用优先队列
+	public static ArrayList<Integer> getLeastKNumbers(int[] input, int k) {
+		ArrayList<Integer> res = new ArrayList<>();
+		if (input.length < k)
+			return res;
+		PriorityQueue<Integer> queue = new PriorityQueue<>();
+		for (int i = 0; i < input.length; i++) {
+			queue.add(input[i]);
+		}
+
+		for (int i = 0; i < k; i++) {
+			res.add(queue.poll());
+		}
+		return res;
+	}
+
+	public static ArrayList<Integer> getLeastKNumbers2(int[] input, int k) {
+		ArrayList<Integer> res = new ArrayList<>();
+		if (input.length < k || input == null || k <= 0) {
+			return res;
+		}
+		int start = 0;
+		int end = input.length - 1;
+		int index = partition(input, start, end);
+		while (index != k - 1) {
+			if (index > k - 1) {
+				end = index - 1;
+				index = partition(input, start, end);
+			} else {
+				start = index + 1;
+				index = partition(input, start, end);
+			}
+		}
+		for (int i = 0; i < k; i++)
+			res.add(input[i]);
+		return res;
+	}
+
+	public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+
+		if (input.length < k || k == 0)
+			return list;
+
+		for (int i = 0; i < k; i++)
+			list.add(input[i]);
+
+		for (int i = k; i < input.length; i++) {
+			int j = this.getMax(list);
+			int temp = (Integer) list.get(j);
+			if (input[i] < temp)
+				list.set(j, input[i]);
+		}
+		return list;
+	}
+
+	public int getMax(ArrayList<Integer> list) {
+		int max = list.get(0);
+		int j = 0;
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i) > max) {
+				max = list.get(i);
+				j = i;
+			}
+		}
+		return j;
+	}
+
+	// 数组中出现次数超过一半的数字
+	// 基于划分的
+	public static int MoreThanHalfNum(int[] array) {
+		// 首先判断输入数组是否有效
+		if (array == null || array.length == 0) {
+			return 0;
+		}
+		int middle = array.length / 2;
+		int start = 0, end = array.length - 1;
+		int index = partition(array, start, end);
+		while (index != middle) {
+			if (index > middle) {
+				end = index - 1;
+				index = partition(array, start, end);
+			} else {
+				start = index + 1;
+				index = partition(array, start, end);
+			}
+		}
+		int res = array[middle];
+		// 再检查是否超过一半的长度
+		int times = 0;
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] == res) {
+				times++;
+			}
+		}
+		if (times * 2 < array.length) {
+			return 0;
+		}
+		return res;
+	}
+
+	public static int partition(int[] array, int start, int end) {
+		int pivot = array[start];
+		while (start < end) {
+			while (start < end && array[end] >= pivot) {
+				end--;
+			}
+			if (start < end) {
+				array[start] = array[end];
+				start++;
+			}
+			while (start < end && array[start] <= pivot) {
+				start++;
+			}
+			if (start < end) {
+				array[end] = array[start];
+				end--;
+			}
+		}
+		array[start] = pivot;
+		return start;
 	}
 
 	// 字符串的排列 递归
@@ -299,17 +530,29 @@ public class NowCoderOffer {
 	class MinMaxStack {
 		Stack<Integer> original = new Stack<>();
 		Stack<Integer> min = new Stack<>();
+		Stack<Integer> max = new Stack<>();
+
+		public boolean isEmpty() {
+			return original.isEmpty();
+		}
 
 		public void push(int node) {
 			if (original.isEmpty()) {
 				original.push(node);
 				min.push(node);
+				max.push(node);
 			} else {
 				original.push(node);
 				if (node < min.peek()) {
 					min.push(node);
 				} else {
 					min.push(min.peek());
+				}
+
+				if (node > max.peek()) {
+					max.push(node);
+				} else {
+					max.push(max.peek());
 				}
 			}
 		}
@@ -318,6 +561,7 @@ public class NowCoderOffer {
 			if (!original.isEmpty()) {
 				original.pop();
 				min.pop();
+				max.pop();
 			}
 		}
 
@@ -330,6 +574,10 @@ public class NowCoderOffer {
 
 		public int min() {
 			return min.peek();
+		}
+
+		public int max() {
+			return max.peek();
 		}
 	}
 
