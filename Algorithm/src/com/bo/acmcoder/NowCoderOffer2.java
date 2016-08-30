@@ -1,63 +1,239 @@
 package com.bo.acmcoder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Stack;
-import java.util.concurrent.BlockingDeque;
-
-import javax.print.DocFlavor.INPUT_STREAM;
-import javax.xml.crypto.Data;
-
-import com.bo.offer.Tree;
 
 public class NowCoderOffer2 {
 
 	// 34题往后的题目
 
 	public static void main(String[] args) {
-
-		int[] data = {1,2,3,3,3,3,4,5};
-		System.out.println(GetNumberOfK(data, 3));
+		FindContinuousSequence(15);
 	}
-	
-	//二叉树的深度
-	public static int TreeDepth(TreeNode pRoot){
+
+	// 单词旋转
+	public static String LeftRotateString(String str, int n) {
+		if (n > str.length()) {
+			return "";
+		}
+		String a = str.substring(0, n);
+		String b = str.substring(n, str.length());
+		StringBuffer c = new StringBuffer(a).reverse().append(new StringBuffer(b).reverse());
+		return c.reverse().toString();
+	}
+
+	// 反转单词的7种方法
+	public static String reverse1(String s) {
+		int length = s.length();
+		if (length <= 1)
+			return s;
+		String left = s.substring(0, length / 2);
+		String right = s.substring(length / 2, length);
+		return reverse1(right) + reverse1(left);
+	}
+
+	public static String reverse2(String s) {
+		int length = s.length();
+		String reverse = "";
+		for (int i = 0; i < length; i++)
+			reverse = s.charAt(i) + reverse;
+		return reverse;
+	}
+
+	public static String reverse3(String s) {
+		char[] array = s.toCharArray();
+		String reverse = "";
+		for (int i = array.length - 1; i >= 0; i--)
+			reverse += array[i];
+
+		return reverse;
+	}
+
+	public static String reverse4(String s) {
+		return new StringBuffer(s).reverse().toString();
+	}
+
+	public static String reverse5(String orig) {
+		char[] s = orig.toCharArray();
+		int n = s.length - 1;
+		int halfLength = n / 2;
+		for (int i = 0; i <= halfLength; i++) {
+			char temp = s[i];
+			s[i] = s[n - i];
+			s[n - i] = temp;
+		}
+		return new String(s);
+	}
+
+	public static String reverse6(String s) {
+
+		char[] str = s.toCharArray();
+
+		int begin = 0;
+		int end = s.length() - 1;
+
+		while (begin < end) {
+			str[begin] = (char) (str[begin] ^ str[end]);
+			str[end] = (char) (str[begin] ^ str[end]);
+			str[begin] = (char) (str[end] ^ str[begin]);
+			begin++;
+			end--;
+		}
+
+		return new String(str);
+	}
+
+	public static String reverse7(String s) {
+		char[] str = s.toCharArray();
+		Stack<Character> stack = new Stack<Character>();
+		for (int i = 0; i < str.length; i++)
+			stack.push(str[i]);
+
+		String reversed = "";
+		for (int i = 0; i < str.length; i++)
+			reversed += stack.pop();
+
+		return reversed;
+	}
+
+	// 和为s的连续正数序列
+	public static ArrayList<ArrayList<Integer>> FindContinuousSequence(int sum) {
+		ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+		if (sum < 3) {
+			return res;
+		}
+		int small = 1, big = 2;
+		int middle = (sum + 1) / 2;
+		int cursum = small + big;
+		while (small < sum) {
+			if (cursum == sum) {
+				ArrayList<Integer> temp = new ArrayList<>();
+				for (int i = small; i <= big; i++) {
+					temp.add(i);
+				}
+				res.add(temp);
+				big++;
+				cursum += big;
+			}
+
+			if (cursum < sum) {
+				big++;
+				cursum += big;
+			}
+			if (cursum > sum) {
+				cursum -= small;
+				small++;
+			}
+			// while(cursum > sum && small < middle){
+			// cursum -= small;
+			// small++;
+			// if (cursum == sum) {
+			// ArrayList<Integer> temp = new ArrayList<>();
+			// for(int i = small;i<= big; i++){
+			// temp.add(i);
+			// }
+			// res.add(temp);
+			// }
+			// }
+			// big ++;
+			// cursum += big;
+		}
+		return res;
+
+	}
+
+	// 数组中只出现一次的数字
+	public static void FindNumsAppearOnce(int[] array, int[] num1, int[] num2) {
+		if (array.length < 2)
+			return;
+		int myxor = 0;
+		int flag = 1;
+		for (int i = 0; i < array.length; ++i)
+			myxor ^= array[i];
+		while ((myxor & flag) == 0)
+			flag <<= 1;
+		// num1[0] = myxor;
+		// num2[0] = myxor;
+		for (int i = 0; i < array.length; ++i) {
+			if ((flag & array[i]) == 0)
+				num2[0] ^= array[i];
+			else
+				num1[0] ^= array[i];
+		}
+	}
+
+	public static void FindNumsAppearsOnce2(int[] array, int[] num1, int[] num2) {
+		if (array == null || array.length == 0) {
+			return;
+		}
+		int exclusiveor = 0;
+		for (int i = 0; i < array.length; i++) {
+			exclusiveor ^= array[i];
+		}
+		int difindex = FindFirstBit1FromRightToLeft(exclusiveor);
+
+		for (int i = 0; i < array.length; i++) {
+			if (BitAtIndex(array[i], difindex) == 1) {
+				num1[0] ^= array[i];
+			} else {
+				num2[0] ^= array[i];
+			}
+		}
+	}
+
+	public static int FindFirstBit1FromRightToLeft(int exc) {
+		int count = 0;
+		while (((exc & 1) == 0) && (count < Integer.SIZE)) {
+			exc = exc >> 1;
+			count++;
+		}
+		return count;
+	}
+
+	public static int BitAtIndex(int num, int index) {
+		num = num >> index;
+		return (num & 1);
+	}
+
+	// 平衡二叉树的判断
+	public static boolean isBalanced(TreeNode root) {
+		if (root == null) {
+			return true;
+		}
+		int left = TreeDepth(root.left);
+		int right = TreeDepth(root.right);
+		int dff = left - right;
+		if (dff > 1 || dff < -1) {
+			return false;
+		}
+		return isBalanced(root.left) && isBalanced(root.right);
+	}
+
+	// 二叉树的深度
+	public static int TreeDepth(TreeNode pRoot) {
 		if (pRoot == null) {
 			return 0;
 		}
-		
+
 		int left = TreeDepth(pRoot.left);
 		int right = TreeDepth(pRoot.right);
-		
+
 		return (left > right) ? (left + 1) : (right + 1);
 	}
-	//迭代求二叉树深度使用栈 求栈的最大深度即二叉树的深度
-	public static int TreeDepth2(TreeNode root){
-		if (root == null) {
-			return 0;
-		}
-		Stack<TreeNode> stack = new Stack<>();
-		int max = 0;
-		stack.push(root);
-		TreeNode p = root.left;
-		while(p != null || !stack.isEmpty()){
-			while(p != null){
-				stack.push(p);
-				p = p.left;
-			}
-			if (stack.size() > max) {
-				max = stack.size();
-			}
-			stack.pop();
-			p = stack.peek().right;
-			
-		}
+
+	// 迭代求二叉树深度使用栈 求栈的最大深度即二叉树的深度 或者层次遍历最大层即深度
+	public static int TreeDepth2(TreeNode root) {
+		return 0;
 	}
-	
-	public static void DFS(TreeNode root){
+
+	public static void DFS(TreeNode root) {
 		Stack<TreeNode> stack = new Stack<>();
 		stack.push(root);
-		TreeNode node;;
-		while(!stack.isEmpty()){
+		TreeNode node;
+		;
+		while (!stack.isEmpty()) {
 			node = stack.pop();
 			System.out.print(node.val + " ");
 			if (node.right != null) {
@@ -68,56 +244,55 @@ public class NowCoderOffer2 {
 			}
 		}
 	}
-	
-	//数字在排序数组中出现的次数
-	public static int GetNumberOfK(int[] array, int k){
+
+	// 数字在排序数组中出现的次数
+	public static int GetNumberOfK(int[] array, int k) {
 		int number = 0;
 		if (array.length == 0) {
 			return number;
 		}
-		int first = GetFirstK(array, k, 0, array.length-1);
+		int first = GetFirstK(array, k, 0, array.length - 1);
 		int last = GetLastK(array, k, 0, array.length - 1);
 		if (first > -1 && last > -1) {
 			number = last - first + 1;
 		}
 		return number;
 	}
-	public static int GetFirstK(int[] array, int k, int start, int end){
+
+	public static int GetFirstK(int[] array, int k, int start, int end) {
 		if (start > end) {
 			return -1;
 		}
 		int middle = start + (end - start) / 2;
 		int middata = array[middle];
 		if (middata == k) {
-			if ((middle > 0 && array[middle-1] != k) || middle == 0) {
+			if ((middle > 0 && array[middle - 1] != k) || middle == 0) {
 				return middle;
-			}
-			else
+			} else
 				end = middle - 1;
-		}
-		else if (middata > k) {
+		} else if (middata > k) {
 			end = middle - 1;
-		}else {
+		} else {
 			start = middle + 1;
 		}
 		return GetFirstK(array, k, start, end);
 	}
-	
-	public static int GetLastK(int[] array, int k, int start, int end){
+
+	public static int GetLastK(int[] array, int k, int start, int end) {
 		if (start > end) {
 			return -1;
 		}
 		int midindex = start + (end - start) / 2;
 		int middata = array[midindex];
 		if (middata == k) {
-			if ((midindex < end && array[midindex+1] != k) || midindex == end) {
+			if ((midindex < end && array[midindex + 1] != k) || midindex == end) {
 				return midindex;
-			}else{
+			} else {
 				start = midindex + 1;
 			}
-		}else if (middata > k) {
+		} else if (middata > k) {
 			end = midindex - 1;
-		}else {
+		} else {
 			start = midindex + 1;
 		}
 		return GetLastK(array, k, start, end);
@@ -147,12 +322,12 @@ public class NowCoderOffer2 {
 		}
 		int step = 0;
 		for (; step < len1; step++) {
-			if (step < (len1-len2)) {
+			if (step < (len1 - len2)) {
 				head1 = head1.next;
 				continue;
-			}else if (head1.val == head2.val) {
+			} else if (head1.val == head2.val) {
 				return head1;
-			}else {
+			} else {
 				head1 = head1.next;
 				head2 = head2.next;
 			}
