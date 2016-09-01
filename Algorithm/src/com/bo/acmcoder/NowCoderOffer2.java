@@ -1,7 +1,11 @@
 package com.bo.acmcoder;
 
+import java.lang.reflect.Array;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -11,11 +15,175 @@ public class NowCoderOffer2 {
 	// 34题往后的题目
 
 	public static void main(String[] args) {
-		FindContinuousSequence(15);
+		ArrayList<Integer> list = new ArrayList(Arrays.asList(new int[] { 1, 2, 3 }));
+
+		isContinuous2(new int[] { 0, 3, 2, 6, 4 });
+	}
+	
+	//数组中重复的数字
+	public static boolean duplicate(int[] numbers, int length, int[] duplication){
+		
 	}
 
-	//句子中单词旋转
-	public static String ReverseSentence(String str){
+	//字符串转换成整数
+	public static int StrToInt(String str){
+		/*数据上下 溢出 空字符串 只有正负号 有无正负号 错误标志输出*/
+		// 进制转换
+		if (str.equals("") || str.length() == 0) {
+			return 0;
+		}
+		char[] a = str.toCharArray();
+		int fuhao = 0;
+		if (a[0] == '-') {
+			fuhao = 1;
+		}
+		int sum = 0;
+		for (int i = fuhao; i < a.length; i++) {
+			if (a[i] == '+') {
+				continue;
+			}
+			if ((a[i] - '0') < 0 || (a[i] - '0') > 9) {
+				return 0;
+			}
+			sum = sum * 10 + a[i] - 48;
+		}
+		return fuhao == 0 ? sum : sum * (-1);
+	}
+	
+	//位运算加法
+	//https://discuss.leetcode.com/topic/49771/java-simple-easy-understand-solution-with-explanation/2
+	//https://leetcode.com/problems/sum-of-two-integers/
+	public int add(int num1, int num2){
+		BigInteger b1 = new BigInteger(String.valueOf(num1));
+		BigInteger b2 = new BigInteger(String.valueOf(num2));
+		return b1.add(b2).intValue();
+	}
+	
+	public int add2(int num1, int num2){
+		int sum = num1;
+		while(num2!=0){
+			sum = num1 ^ num2;
+			num2 = (num1 & num2) << 1;
+			num1 = sum;
+		}
+		return sum;
+	}
+
+	// 圆圈中最后剩下的数字
+	public static int LastRemaining(int n, int m) {
+		if (n == 0 || m == 0)
+			return -1;
+		int s = 0;
+		for (int i = 2; i <= n; i++) {
+			s = (s + m) % i;
+		}
+		return s;
+	}
+
+	/*
+	 * 这道题我用数组来模拟环，思路还是比较简单，但是各种下标要理清
+	 */
+	public static int findLastNumber(int n, int m) {
+		if (n < 1 || m < 1)
+			return -1;
+		int[] array = new int[n];
+		int i = -1, step = 0, count = n;
+		while (count > 0) { // 跳出循环时将最后一个元素也设置为了-1
+			i++; // 指向上一个被删除对象的下一个元素。
+			if (i >= n)
+				i = 0; // 模拟环。
+			if (array[i] == -1)
+				continue; // 跳过被删除的对象。
+			step++; // 记录已走过的。
+			if (step == m) { // 找到待删除的对象。
+				array[i] = -1;
+				step = 0;
+				count--;
+			}
+		}
+		return i;// 返回跳出循环时的i,即最后一个被设置为-1的元素
+	}
+	
+	int LastRemaining_Solution(int n, int m) {
+        if (m == 0 || n == 0) {
+            return -1;
+        }
+        ArrayList<Integer> data = new ArrayList<Integer>();
+        for (int i = 0; i < n; i++) {
+            data.add(i);
+        }
+        int index = -1;
+        while (data.size() > 1) {
+//          System.out.println(data);
+            index = (index + m) % data.size();
+//          System.out.println(data.get(index));
+            data.remove(index);
+            index--;
+        }
+        return data.get(0);
+    }
+
+	// 扑克牌的顺子 排序法和哈希法
+	public static boolean isContinuous(int[] numbers) {
+		if (numbers == null || numbers.length == 0) {
+			return false;
+		}
+		Arrays.sort(numbers);
+		int numof0 = 0;
+		int numofgap = 0;
+		for (int i : numbers) {
+			if (i == 0) {
+				numof0++;
+			}
+		}
+
+		int small = numof0;
+		int big = small + 1;
+		while (big < numbers.length) {
+			if (numbers[small] == numbers[big]) {
+				return false;
+			}
+			numofgap += numbers[big] - numbers[small] - 1;
+			small = big;
+			big++;
+		}
+		return (numofgap > numof0) ? false : true;
+	}
+
+	public static boolean isContinuous2(int[] numbers) {
+		if (numbers == null || numbers.length < 1) {
+			return false;
+		}
+
+		int[] hash = new int[14];
+		int start = 15, end = -1;
+		for (int i : numbers) {
+			hash[i]++;
+			if (i < start && i != 0) {
+				start = i;
+			}
+			if (i > end) {
+				end = i;
+			}
+		}
+
+		int numsof0 = hash[0];
+		int numsofgap = 0;
+		int small = start, big = small + 1;
+		while (start <= end) {
+			if (hash[small] > 1 || hash[big] > 1) {
+				return false;
+			}
+			if (hash[start] == 0) {
+				numsofgap++;
+			}
+			start++;
+		}
+		return (numsofgap > numsof0) ? false : true;
+	}
+
+	// 句子中单词旋转
+	public static String ReverseSentence(String str) {
 		if (str == null || str.length() == 0) {
 			return "";
 		}
@@ -24,16 +192,15 @@ public class NowCoderOffer2 {
 		}
 		StringTokenizer token = new StringTokenizer(str);
 		Stack<String> stack = new Stack<>();
-		while(token.hasMoreTokens()){
+		while (token.hasMoreTokens()) {
 			stack.push(token.nextToken());
 		}
 		StringBuilder sBuilder = new StringBuilder();
-		while(!stack.isEmpty())
+		while (!stack.isEmpty())
 			sBuilder.append(stack.pop() + " ");
-		return sBuilder.deleteCharAt(sBuilder.length()-1).toString();
+		return sBuilder.deleteCharAt(sBuilder.length() - 1).toString();
 	}
-	
-	
+
 	// 左旋转
 	public static String LeftRotateString(String str, int n) {
 		if (n > str.length()) {

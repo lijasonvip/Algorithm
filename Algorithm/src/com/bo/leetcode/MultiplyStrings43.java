@@ -1,12 +1,88 @@
 package com.bo.leetcode;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.naming.spi.DirStateFactory.Result;
+
 public class MultiplyStrings43 {
 
 	// 大数乘法
 
 	public static void main(String[] args) {
-		System.out.println(multiply2("123", "45"));
+		MultiplyStrings43 m = new MultiplyStrings43();
+		List<Integer> res = m.subArraySum(new int[]{4,2,-5,11}, 3);
+		
+		System.out.println(m.find((long)304103414));
 	}
+	
+	public long find(long n){
+		String string = String.valueOf(n);
+		String[] strings = new String[string.length()];
+		for (int i = 0; i < strings.length; i++) {
+			strings[i] = String.valueOf(string.charAt(i));
+		}
+		Arrays.sort(strings, new Comparator<String>() {
+			public int compare(String a, String b){
+				String s1 = a+b;
+				String s2 = b + a;
+				return s1.compareTo(s2);
+			}
+		});
+		StringBuilder sBuilder = new StringBuilder();
+		for (String s:strings) {
+			sBuilder.append(s);
+		}
+		int count=0;
+		while(sBuilder.charAt(0) == '0') {
+			sBuilder.deleteCharAt(0);
+			count++;
+		}
+		StringBuilder res = new StringBuilder();
+		if (count != 0) {
+			char head = sBuilder.charAt(0);
+			sBuilder.deleteCharAt(0);
+			res.append(head);
+			for(int i=0;i<count;i++)
+				res.append('0');
+		}
+		res.append(sBuilder.toString());
+		
+		return Long.valueOf(res.toString());
+	}
+	
+	public List<Integer> subArraySum(int[] data, int k){
+		if (data == null || k > data.length) {
+			return null;
+		}
+		int[] res = new int[data.length];
+		for (int i = 0; i < data.length; i++) {
+			res[i] = getCircle(data, k, i+1);
+		}
+		
+		List<Integer> result = new ArrayList<>();
+		for (int i : res) {
+			result.add(i);
+		}
+		return result;
+	}
+	
+	public int getCircle(int[] data, int k, int i){
+		int index = i;
+		int sum = 0;
+		for(int j=0;j<k;j++){
+			if (i > data.length -1) {
+				i = 0;
+			}
+			sum += data[i];
+			i++;
+		}
+		return sum;
+	}
+	
 
 	/**
 	 * 两个数字按位乘举个例子类似了leetcode的例子很好懂
