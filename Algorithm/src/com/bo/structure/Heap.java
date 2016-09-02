@@ -1,6 +1,15 @@
 package com.bo.structure;
 
+
 public class Heap {
+	
+	  public static void main(String[] args) {
+	        int[] a = {3,44,38,5,47,15,36,26,27,2,46,4,19,50,48};
+	        Heap_Sort(a);
+	        for(int aa:a){
+	        	System.out.println(aa);
+	        }
+	    }
 	/**
 	 * @param data
 	 *            we use array to store a Heap, if root index is 0 then it's
