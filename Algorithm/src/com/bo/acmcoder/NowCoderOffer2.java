@@ -2,8 +2,10 @@ package com.bo.acmcoder;
 
 import java.lang.reflect.Array;
 import java.math.BigInteger;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -15,19 +17,76 @@ public class NowCoderOffer2 {
 	// 34题往后的题目
 
 	public static void main(String[] args) {
-		ArrayList<Integer> list = new ArrayList(Arrays.asList(new int[] { 1, 2, 3 }));
+		// ArrayList<Integer> list = new ArrayList(Arrays.asList(new int[] { 1,
+		// 2, 3 }));
+		//
+		// isContinuous2(new int[] { 0, 3, 2, 6, 4 });
+//		System.out.println(ReverseSentence("I love C++ and   Java"));
+//		String[] teStrings = "I love C++ and   Java".split("\\s+");
+//		System.out.println(teStrings.length);
+		int[] data = {2,3,4,2,6,2,5,1};
+		maxInWindows(data, 3);
 
-		isContinuous2(new int[] { 0, 3, 2, 6, 4 });
+	}
+
+	// 滑动窗口的最大值
+	public static ArrayList<Integer> maxInWindows(int[] num, int size) {
+		if (num == null || size < 0) {
+			return null;
+		}
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		if (size == 0) {
+			return list;
+		}
+		ArrayList<Integer> temp = null;
+		int length = num.length;
+		if (length < size) {
+			return list;
+		} else {
+			for (int i = 0; i < length - size + 1; i++) {
+				temp = new ArrayList<Integer>();
+				for (int j = i; j < size + i; j++) {
+					temp.add(num[j]);
+				}
+				Collections.sort(temp);
+				list.add(temp.get(temp.size() - 1));
+			}
+		}
+		return list;
 	}
 	
-	//数组中重复的数字
-	public static boolean duplicate(int[] numbers, int length, int[] duplication){
-		
+	public static  ArrayList<Integer> maxInWindows2(int [] num, int size)
+    {
+        ArrayList<Integer> res = new ArrayList<>();
+        if(size == 0) return res;
+        int begin; 
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        for(int i = 0; i < num.length; i++){
+            begin = i - size + 1;
+            if(q.isEmpty())
+                q.add(i);
+            else if(begin > q.peekFirst())
+                q.pollFirst();
+         
+            while((!q.isEmpty()) && num[q.peekLast()] <= num[i])
+                q.pollLast();
+            q.add(i);  
+            if(begin >= 0)
+                res.add(num[q.peekFirst()]);
+        }
+        return res;
+    }
+
+	// 数据流的中位数
+
+	// 数组中重复的数字
+	public static boolean duplicate(int[] numbers, int length, int[] duplication) {
+		return false;
 	}
 
-	//字符串转换成整数
-	public static int StrToInt(String str){
-		/*数据上下 溢出 空字符串 只有正负号 有无正负号 错误标志输出*/
+	// 字符串转换成整数
+	public static int StrToInt(String str) {
+		/* 数据上下 溢出 空字符串 只有正负号 有无正负号 错误标志输出 */
 		// 进制转换
 		if (str.equals("") || str.length() == 0) {
 			return 0;
@@ -49,19 +108,19 @@ public class NowCoderOffer2 {
 		}
 		return fuhao == 0 ? sum : sum * (-1);
 	}
-	
-	//位运算加法
-	//https://discuss.leetcode.com/topic/49771/java-simple-easy-understand-solution-with-explanation/2
-	//https://leetcode.com/problems/sum-of-two-integers/
-	public int add(int num1, int num2){
+
+	// 位运算加法
+	// https://discuss.leetcode.com/topic/49771/java-simple-easy-understand-solution-with-explanation/2
+	// https://leetcode.com/problems/sum-of-two-integers/
+	public int add(int num1, int num2) {
 		BigInteger b1 = new BigInteger(String.valueOf(num1));
 		BigInteger b2 = new BigInteger(String.valueOf(num2));
 		return b1.add(b2).intValue();
 	}
-	
-	public int add2(int num1, int num2){
+
+	public int add2(int num1, int num2) {
 		int sum = num1;
-		while(num2!=0){
+		while (num2 != 0) {
 			sum = num1 ^ num2;
 			num2 = (num1 & num2) << 1;
 			num1 = sum;
@@ -103,25 +162,25 @@ public class NowCoderOffer2 {
 		}
 		return i;// 返回跳出循环时的i,即最后一个被设置为-1的元素
 	}
-	
+
 	int LastRemaining_Solution(int n, int m) {
-        if (m == 0 || n == 0) {
-            return -1;
-        }
-        ArrayList<Integer> data = new ArrayList<Integer>();
-        for (int i = 0; i < n; i++) {
-            data.add(i);
-        }
-        int index = -1;
-        while (data.size() > 1) {
-//          System.out.println(data);
-            index = (index + m) % data.size();
-//          System.out.println(data.get(index));
-            data.remove(index);
-            index--;
-        }
-        return data.get(0);
-    }
+		if (m == 0 || n == 0) {
+			return -1;
+		}
+		ArrayList<Integer> data = new ArrayList<Integer>();
+		for (int i = 0; i < n; i++) {
+			data.add(i);
+		}
+		int index = -1;
+		while (data.size() > 1) {
+			// System.out.println(data);
+			index = (index + m) % data.size();
+			// System.out.println(data.get(index));
+			data.remove(index);
+			index--;
+		}
+		return data.get(0);
+	}
 
 	// 扑克牌的顺子 排序法和哈希法
 	public static boolean isContinuous(int[] numbers) {
