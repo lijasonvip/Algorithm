@@ -14,18 +14,26 @@ import java.util.StringTokenizer;
 
 public class NowCoderOffer2 {
 
-	// 34题往后的题目
+	// 
+	
+	public static double calculation(double x){
+		double exp = Math.exp(x);
+		double log = Math.log(1+exp);
+		return log;
+	}
+	
+	//34题往后的题目
 
 	public static void main(String[] args) {
 		// ArrayList<Integer> list = new ArrayList(Arrays.asList(new int[] { 1,
 		// 2, 3 }));
 		//
 		// isContinuous2(new int[] { 0, 3, 2, 6, 4 });
-//		System.out.println(ReverseSentence("I love C++ and   Java"));
-//		String[] teStrings = "I love C++ and   Java".split("\\s+");
-//		System.out.println(teStrings.length);
-		int[] data = {2,3,4,2,6,2,5,1};
-		maxInWindows(data, 3);
+		// System.out.println(ReverseSentence("I love C++ and Java"));
+		// String[] teStrings = "I love C++ and Java".split("\\s+");
+		// System.out.println(teStrings.length);
+	
+		System.out.println(calculation(10000));
 
 	}
 
@@ -54,28 +62,28 @@ public class NowCoderOffer2 {
 		}
 		return list;
 	}
-	
-	public static  ArrayList<Integer> maxInWindows2(int [] num, int size)
-    {
-        ArrayList<Integer> res = new ArrayList<>();
-        if(size == 0) return res;
-        int begin; 
-        ArrayDeque<Integer> q = new ArrayDeque<>();
-        for(int i = 0; i < num.length; i++){
-            begin = i - size + 1;
-            if(q.isEmpty())
-                q.add(i);
-            else if(begin > q.peekFirst())
-                q.pollFirst();
-         
-            while((!q.isEmpty()) && num[q.peekLast()] <= num[i])
-                q.pollLast();
-            q.add(i);  
-            if(begin >= 0)
-                res.add(num[q.peekFirst()]);
-        }
-        return res;
-    }
+
+	public static ArrayList<Integer> maxInWindows2(int[] num, int size) {
+		ArrayList<Integer> res = new ArrayList<>();
+		if (size == 0)
+			return res;
+		int begin;
+		ArrayDeque<Integer> q = new ArrayDeque<>();
+		for (int i = 0; i < num.length; i++) {
+			begin = i - size + 1;
+			if (q.isEmpty())
+				q.add(i);
+			else if (begin > q.peekFirst())
+				q.pollFirst();
+
+			while ((!q.isEmpty()) && num[q.peekLast()] <= num[i])
+				q.pollLast();
+			q.add(i);
+			if (begin >= 0)
+				res.add(num[q.peekFirst()]);
+		}
+		return res;
+	}
 
 	// 数据流的中位数
 

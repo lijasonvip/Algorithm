@@ -1,5 +1,7 @@
 package com.bo.dynamic;
 
+import java.util.Scanner;
+
 public class LongestCommonSubsequence {
 	// define prefix of a sequence, Xi is sequence of X[1...m]
 	// two sequence X[1...m], Y[1...n], Z[1...k] is LCS of X and Y
@@ -63,6 +65,8 @@ public class LongestCommonSubsequence {
 	}
 	
 	public static void main(String... args){
+		Scanner scanner = new Scanner(System.in);
+		scanner.nextLine();
 		String[] X = {"A","B","C","B","D","A","B"};
 		String[] Y = {"B","D","C","A","B","A"};
 		int[][][] result = LCS_Length(X,Y);
