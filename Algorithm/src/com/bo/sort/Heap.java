@@ -81,4 +81,50 @@ public class Heap {
         Heap.sort(a);
         show(a);
     }
+	
+    public static int[] HeapSort(int[] data){
+    BuildHeap(data);
+    int n = data.length;
+    for (int last=n-1;last>=1;last--) {
+      //exchange 0 with last
+      int tmp = data[0];
+      data[0] = data[last];
+      data[last] = tmp;
+      //shift down the top node, controlled by the length
+      AdjustHeap(data, 0, last);
+    }
+    return data;
+  }
+
+  public static void BuildHeap(int[] data) {
+    int n = data.length;
+    for (int i=(n/2 -1); i>=0; i--) {
+      AdjustHeap(data, i, n);
+    }
+  }
+
+  public static void AdjustHeap(int[] data, int idx, int len) {
+    int left = 2 * idx + 1;
+    int right = left + 1;
+    int largest = 0;
+
+    if (left < len && data[left] > data[idx]) {
+      largest = left;
+    }else {
+      largest = idx;
+    }
+
+    if (right < len && data[right] > data[largest]){
+      largest = right;
+    }
+
+    if (largest != idx){
+      int temp = data[idx];
+      data[idx] = data[largest];
+      data[largest] = temp;
+      //shiftdown
+      AdjustHeap(data, largest, len);
+    }
+  }
+	
 }
